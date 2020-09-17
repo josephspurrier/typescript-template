@@ -4,12 +4,28 @@ This is a WIP while testing how JSX works without React.
 
 It does support JSX via .jsx or .tsx file extensions. This project is designed to show how modern, front-end development tools integrate. It takes a while to piece together your own tools for linting, building, testing, etc. so you can reference this to see how to get all these different tools set up and integrated.
 
-This projects uses/supports:
+This project supports these features:
+
+- [x] Render function for JSX
+- [x] JSX using TypeScript (.tsx)
+- [ ] JSX using Babel (.jsx)
+- [x] JSX fragments
+- [x] JSX declarations/interfaces for: IntrinsicElements, Element, ElementChildrenAttribute
+- [x] JSX children access via attributes (typing available using interfaces)
+- [x] JSX attribute access (using interfaces)
+- [x] JSX functional components
+- [ ] JSX class components
+- [x] JSX as children in JSX components
+- [ ] JSX keys for loops
+- [x] JSX attributes for strings
+- [x] JSX attributes for booleans (like 'required')
+- [x] JSX event handling for 'on' functions
+
+This project uses these tools:
 
 - [Bulma](https://bulma.io/)
 - [ESLint](https://eslint.org/)
 - [JSX](https://www.typescriptlang.org/docs/handbook/jsx.html)
-- [Mithril](https://mithril.js.org/)
 - [npm](https://www.npmjs.com/)
 - [Sass](https://sass-lang.com/libsass)
 - [Prettier](https://prettier.io/)
@@ -84,8 +100,6 @@ If you open this project in Visual Studio Code, you will get:
 
 These code snippets are included - just start typing and they should be in the auto-complete menu. A few of them support tabbing through the various fields:
 
-- **mithril-closure** - Creates a closure component in Mithril.
-- **mithril-storybook** - Creates a storybook component in Mithril.
 - **arrow** - Creates an arrow function.
 - **onclick** - Creates an onclick with an arrow function.
 - **log** - Creates a console.log() statement.

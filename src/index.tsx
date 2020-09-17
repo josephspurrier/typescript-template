@@ -4,173 +4,196 @@ export interface ElementAttrs {
 }
 
 export const React = {
-  Fragment: function ({
-    children,
-  }: {
-    children: HTMLElement[];
-  }): HTMLElement[] {
-    console.log('fragment:', ...children);
-    return children;
+  Fragment: function (attrs: { children: HTMLElement[] }): HTMLElement[] {
+    return attrs.children;
   },
   createElement: function (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tag: string | ((attrs: any) => HTMLElement),
+    tag:
+      | string
+      | ((attrs: ElementAttrs, ...children: HTMLElement[]) => HTMLElement),
     attrs: ElementAttrs,
     ...children: HTMLElement[]
   ): HTMLElement {
-    let elem: HTMLElement;
-
+    // Support functions (closures).
     if (typeof tag === 'function') {
-      //console.log('children:', children, tag);
-      // for (const child of children) {
-      //   if (Array.isArray(child)) {
-      //     const t = document.createElement
-      //     elem.append(...child);
-      //   } else {
-      //     elem.appendChild(
-      //       child.nodeType == null
-      //         ? document.createTextNode(child.toString())
-      //         : child,
-      //     );
-      //   }
-      // }
-
       return tag({ ...attrs, children: children });
-    } else {
-      elem = document.createElement(tag);
     }
 
-    // Add attributes
-    for (const name in attrs) {
+    // Create the element.
+    const elem = document.createElement(tag);
+
+    // Apply the attributes and event listeners.
+    Object.entries(attrs || {}).forEach(([name, value]) => {
       // eslint-disable-next-line no-prototype-builtins
-      if (name && attrs.hasOwnProperty(name)) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const v = attrs[name];
-        if (v === true) {
-          elem.setAttribute(name, name);
-        } else if (name === 'onclick') {
-          elem.addEventListener('click', v);
-        } else if (v !== false && v != null) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          elem.setAttribute(name, v.toString());
-        }
+      if (!attrs.hasOwnProperty(name)) {
+        // Skip properties that are inherited.
+      } else if (name.startsWith('on') && name.toLowerCase() in window) {
+        // Add event listeners for those that are available in the window.
+        elem.addEventListener(name.toLowerCase().substr(2), value);
+      } else if (value === true) {
+        // Add attributes that are boolean so they don't have a value, only a name.
+        elem.setAttribute(name, '');
+      } else if (value === false || value === null || value === undefined) {
+        // Skip attributes that are: false, null, undefined.
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+        elem.setAttribute(name, value.toString());
       }
-    }
+    });
 
-    if (typeof children === 'string' || children instanceof String) {
-      elem.appendChild(document.createTextNode(children.toString()));
-    } else if (Array.isArray(children)) {
-      for (const child of children) {
-        if (Array.isArray(child)) {
-          elem.append(...child);
-        } else {
-          elem.appendChild(
-            child.nodeType == null
-              ? document.createTextNode(child.toString())
-              : child,
-          );
-        }
-      }
-    } else {
-      console.log('Other:', children);
-      elem.appendChild(children);
-    }
+    const appendChild = (parent: HTMLElement, child: HTMLElement) => {
+      if (Array.isArray(child))
+        child.forEach((nestedChild) => appendChild(parent, nestedChild));
+      else
+        parent.appendChild(
+          child.nodeType ? child : document.createTextNode(child.toString()),
+        );
+    };
+
+    children.forEach((child) => {
+      appendChild(elem, child);
+    });
 
     return elem;
   },
 };
 
-// Test destructuring
-const name = 'Joe';
-const friends = ['Katrina', 'James', 'Hercules'];
-const Hello = ({ username }: { username: string }): JSX.Element => {
-  return <div>Hello World: {username}</div>;
-};
-
-// Test interface
-interface Hello2Attrs {
-  username: string;
-}
-const Hello2 = (attrs: Hello2Attrs): JSX.Element => {
-  return <div>Hello World: {attrs.username}</div>;
-};
+// *****************************************************************************
+// *****************************************************************************
 
 const Empty = (): JSX.Element => {
-  return <div>This is a div with no parameters passed in.</div>;
+  return <div>This is a div without attributes or children.</div>;
 };
 
-interface SingleChildTextAttrs {
+const Destructuring = ({ username }: { username: string }): JSX.Element => {
+  return <div>Destructuring should show foo: {username}</div>;
+};
+
+interface InterfacingAttrs {
+  username: string;
+}
+const Interfacing = (attrs: InterfacingAttrs): JSX.Element => {
+  return <div>Interfacing should show bar: {attrs.username}</div>;
+};
+
+interface SingleChildStringAttrs {
   children: string;
 }
 
-const SingleChildText = (attrs: SingleChildTextAttrs): JSX.Element => {
-  return <div>Here is the child: {attrs.children}</div>;
+const SingleChildText = (attrs: SingleChildStringAttrs): JSX.Element => {
+  return <div>Child should be Saturn: {attrs.children}</div>;
 };
 
-interface SingleChildElementAttrs {
+interface NestedChildElementAttrs {
   children: JSX.Element;
 }
 
-const SingleChildElement = (attrs: SingleChildElementAttrs): JSX.Element => {
-  return <div>Here is the child: {attrs.children}</div>;
+const NestedChildElement = (attrs: NestedChildElementAttrs): JSX.Element => {
+  return (
+    <div>
+      Child below should be Mars in a {`<div>`} and {`<span>`}: {attrs.children}
+    </div>
+  );
 };
 
-const Fragments = (): JSX.Element => {
+const TwoFragments = (): JSX.Element => {
   return (
     <>
-      <div>div 1</div>
-      <div>div 2</div>
+      <div>This is fragment A.</div>
+      <div>This is fragment B.</div>
     </>
   );
 };
 
 interface FragmentsAttrs {
-  left: string;
-  right: string;
-  children: JSX.Element;
+  num1: string;
+  num2: string;
+  children: JSX.Element | string;
 }
 
-const FragmentsAttrs = (attrs: FragmentsAttrs): JSX.Element => {
+const FragmentChild = (attrs: FragmentsAttrs): JSX.Element => {
   return (
     <>
-      <div name={attrs.left}>div 10</div>
+      <div name={attrs.num1}>div {attrs.num1}</div>
       {attrs.children}
-      <div name={attrs.right}>div 20</div>
+      <div name={attrs.num2}>div {attrs.num2}</div>
     </>
   );
 };
+
+interface RequiredAttrs {
+  required: boolean;
+}
+
+const RequiredTrue = (attrs: RequiredAttrs): JSX.Element => {
+  return (
+    <div required={attrs.required}>
+      This is a div with a required attribute that should be set (true).
+    </div>
+  );
+};
+const RequiredFalse = (attrs: RequiredAttrs): JSX.Element => {
+  return (
+    <div required={attrs.required}>
+      This is a div with a required attribute that is not set (false).
+    </div>
+  );
+};
+
+const firstname = 'User';
+const alphabet = ['Alpha', 'Bravo', 'Charlie'];
+
+let counter = 0;
 
 // // Create some dom elements
 const App = (): JSX.Element => {
   return (
     <div class='app'>
+      <p>Welcome back, {firstname}.</p>
+
       <Empty></Empty>
-      <SingleChildText>baby text</SingleChildText>
-      <SingleChildElement>
-        <span>
-          <span>baby element in double span</span>
-        </span>
-      </SingleChildElement>
-      <Fragments />
-      <FragmentsAttrs left='lefty' right='righty'>
-        <div>div middle</div>
-      </FragmentsAttrs>
-      <Hello username='josephspurrier' />
-      <Hello2 username='josephspurrier' />
-      <p>Welcome back, {name}.</p>
+      <Destructuring username='foo' />
+      <Interfacing username='bar' />
+
+      <SingleChildText>Saturn</SingleChildText>
+
+      <NestedChildElement>
+        <div>
+          <span>Mars</span>
+        </div>
+      </NestedChildElement>
+
+      <TwoFragments />
+
+      <FragmentChild num1='10A' num2='10B'>
+        <div>Text should be in a div.</div>
+      </FragmentChild>
+
+      <FragmentChild num1='20A' num2='20B'>
+        Text is not in a div.
+      </FragmentChild>
+
+      <hr />
+
+      <RequiredTrue required={true} />
+      <RequiredFalse required={false} />
+
+      <hr />
+
       <button
         onclick={(e: MouseEvent) => {
-          console.log('clicked:', e.isTrusted);
+          console.log('Counter should increase on each click:', counter++);
+          console.log('Should show MouseEvent:', e);
         }}
       >
-        Click Me
+        Click to show Console Message
       </button>
       <p>
-        <strong>Your friends are:</strong>
+        <strong>Below are list items from an array:</strong>
       </p>
       <ul>
-        {friends.map((n) => (
-          <li key='name'>{n}</li>
+        {alphabet.map((n) => (
+          <li key={n}>{n}</li>
         ))}
       </ul>
     </div>
