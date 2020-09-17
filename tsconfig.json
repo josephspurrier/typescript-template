@@ -16,7 +16,6 @@
     },
     "outDir": "./dist/",
     "jsx": "react",
-    //"jsxFactory": "createElement",
     "allowJs": true,
     "checkJs": true
   },

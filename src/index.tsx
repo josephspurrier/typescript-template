@@ -4,6 +4,9 @@ export interface ElementAttrs {
 }
 
 export const React = {
+  Fragment: function (props: { children: HTMLElement }): HTMLElement {
+    return props.children;
+  },
   createElement: function (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tag: string | ((attrs: any) => HTMLElement),
@@ -85,12 +88,22 @@ const SingleChild = (attrs: SingleChildAttrs): JSX.Element => {
   return <div>Here is the child: {attrs.children}</div>;
 };
 
+const Fragments = (): JSX.Element => {
+  return (
+    <>
+      <div>div 1</div>
+      <div>div 2</div>
+    </>
+  );
+};
+
 // // Create some dom elements
 const App = (): JSX.Element => {
   return (
     <div class='app'>
       <Empty></Empty>
       <SingleChild>baby</SingleChild>
+      <Fragments />
       <Hello username='josephspurrier' />
       <Hello2 username='josephspurrier' />
       <p>Welcome back, {name}.</p>
