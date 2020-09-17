@@ -6,14 +6,14 @@ export interface ElementAttrs {
 export const React = {
   createElement: function (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    tag: string | (() => HTMLElement),
+    tag: string | ((attrs: any) => HTMLElement),
     attrs: ElementAttrs,
     ...children: HTMLElement[]
   ): HTMLElement {
     let elem: HTMLElement;
 
     if (typeof tag === 'function') {
-      return tag();
+      return tag(attrs);
     } else {
       elem = document.createElement(tag);
     }
@@ -58,19 +58,32 @@ export const React = {
   },
 };
 
-// Setup some data
+// Test destructuring
 const name = 'Joe';
-const friends = ['Katrina', 'James', 'Hercule'];
+const friends = ['Katrina', 'James', 'Hercules'];
+const Hello = ({ username }: { username: string }): JSX.Element => {
+  return <div>Hello World: {username}</div>;
+};
 
-const Hello = (): JSX.Element => {
-  return <div>Hello World</div>;
+// Test interface
+interface Hello2Attrs {
+  username: string;
+}
+const Hello2 = (attrs: Hello2Attrs): JSX.Element => {
+  return <div>Hello World: {attrs.username}</div>;
+};
+
+const Empty = (): JSX.Element => {
+  return <div>This is a div with no parameters passed in.</div>;
 };
 
 // // Create some dom elements
 const App = (): JSX.Element => {
   return (
     <div class='app'>
-      <Hello />
+      <Empty>This is an empty div.</Empty>
+      <Hello username='josephspurrier' />
+      <Hello2 username='josephspurrier' />
       <p>Welcome back, {name}.</p>
       <button
         onclick={(e: MouseEvent) => {
