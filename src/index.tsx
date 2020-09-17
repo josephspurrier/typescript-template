@@ -4,8 +4,13 @@ export interface ElementAttrs {
 }
 
 export const React = {
-  Fragment: function (props: { children: HTMLElement }): HTMLElement {
-    return props.children;
+  Fragment: function ({
+    children,
+  }: {
+    children: HTMLElement[];
+  }): HTMLElement[] {
+    console.log('fragment:', ...children);
+    return children;
   },
   createElement: function (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,6 +21,20 @@ export const React = {
     let elem: HTMLElement;
 
     if (typeof tag === 'function') {
+      //console.log('children:', children, tag);
+      // for (const child of children) {
+      //   if (Array.isArray(child)) {
+      //     const t = document.createElement
+      //     elem.append(...child);
+      //   } else {
+      //     elem.appendChild(
+      //       child.nodeType == null
+      //         ? document.createTextNode(child.toString())
+      //         : child,
+      //     );
+      //   }
+      // }
+
       return tag({ ...attrs, children: children });
     } else {
       elem = document.createElement(tag);
@@ -80,11 +99,19 @@ const Empty = (): JSX.Element => {
   return <div>This is a div with no parameters passed in.</div>;
 };
 
-interface SingleChildAttrs {
+interface SingleChildTextAttrs {
   children: string;
 }
 
-const SingleChild = (attrs: SingleChildAttrs): JSX.Element => {
+const SingleChildText = (attrs: SingleChildTextAttrs): JSX.Element => {
+  return <div>Here is the child: {attrs.children}</div>;
+};
+
+interface SingleChildElementAttrs {
+  children: JSX.Element;
+}
+
+const SingleChildElement = (attrs: SingleChildElementAttrs): JSX.Element => {
   return <div>Here is the child: {attrs.children}</div>;
 };
 
@@ -97,13 +124,37 @@ const Fragments = (): JSX.Element => {
   );
 };
 
+interface FragmentsAttrs {
+  left: string;
+  right: string;
+  children: JSX.Element;
+}
+
+const FragmentsAttrs = (attrs: FragmentsAttrs): JSX.Element => {
+  return (
+    <>
+      <div name={attrs.left}>div 10</div>
+      {attrs.children}
+      <div name={attrs.right}>div 20</div>
+    </>
+  );
+};
+
 // // Create some dom elements
 const App = (): JSX.Element => {
   return (
     <div class='app'>
       <Empty></Empty>
-      <SingleChild>baby</SingleChild>
+      <SingleChildText>baby text</SingleChildText>
+      <SingleChildElement>
+        <span>
+          <span>baby element in double span</span>
+        </span>
+      </SingleChildElement>
       <Fragments />
+      <FragmentsAttrs left='lefty' right='righty'>
+        <div>div middle</div>
+      </FragmentsAttrs>
       <Hello username='josephspurrier' />
       <Hello2 username='josephspurrier' />
       <p>Welcome back, {name}.</p>
