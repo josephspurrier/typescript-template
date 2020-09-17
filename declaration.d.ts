@@ -5,13 +5,36 @@ declare module '*.scss' {
   export default content;
 }
 
+// declare namespace JSX {
+//   interface IntrinsicElements {
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     [elemName: string]: any;
+//   }
+//   interface Element {
+//     (): HTMLElement;
+//   }
+//   interface ElementChildrenAttribute {
+//     // eslint-disable-next-line @typescript-eslint/ban-types
+//     children: {}; // specify children name to use
+//   }
+// }
+
 declare namespace JSX {
+  interface ElementAttrs {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [property: string]: any;
+  }
+  interface Vnode {
+    tag: string;
+    attrs: ElementAttrs;
+    children: Vnode[] | string[];
+  }
   interface IntrinsicElements {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [elemName: string]: any;
   }
   interface Element {
-    (): HTMLElement;
+    (): Vnode;
   }
   interface ElementChildrenAttribute {
     // eslint-disable-next-line @typescript-eslint/ban-types

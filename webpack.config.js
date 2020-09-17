@@ -12,7 +12,7 @@ const ASSET_PATH = '/';
 const DEV = process.env.NODE_ENV !== 'production';
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src', 'index'),
+  entry: path.resolve(__dirname, 'src', 'vdom'),
   plugins: [
     new CleanWebpackPlugin({
       verbose: false,
