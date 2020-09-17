@@ -13,7 +13,7 @@ export const React = {
     let elem: HTMLElement;
 
     if (typeof tag === 'function') {
-      return tag(attrs);
+      return tag({ ...attrs, children: children });
     } else {
       elem = document.createElement(tag);
     }
@@ -77,11 +77,20 @@ const Empty = (): JSX.Element => {
   return <div>This is a div with no parameters passed in.</div>;
 };
 
+interface SingleChildAttrs {
+  children: string;
+}
+
+const SingleChild = (attrs: SingleChildAttrs): JSX.Element => {
+  return <div>Here is the child: {attrs.children}</div>;
+};
+
 // // Create some dom elements
 const App = (): JSX.Element => {
   return (
     <div class='app'>
-      <Empty>This is an empty div.</Empty>
+      <Empty></Empty>
+      <SingleChild>baby</SingleChild>
       <Hello username='josephspurrier' />
       <Hello2 username='josephspurrier' />
       <p>Welcome back, {name}.</p>

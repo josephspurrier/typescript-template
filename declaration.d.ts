@@ -13,4 +13,8 @@ declare namespace JSX {
   interface Element {
     (): HTMLElement;
   }
+  interface ElementChildrenAttribute {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    children: {}; // specify children name to use
+  }
 }
