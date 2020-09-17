@@ -200,11 +200,26 @@ const App = (): JSX.Element => {
   );
 };
 
-const render = (parent: HTMLElement, child: () => JSX.Element) => {
-  const childElem = (child() as unknown) as HTMLDivElement;
-  parent.appendChild(childElem);
-  // const w = window.document.getElementById('app');
-  // parent.replaceWith(childElem);
+const render = (
+  parent: HTMLElement,
+  child: string | (() => JSX.Element),
+  replace = false,
+) => {
+  if (typeof child === 'function') {
+    const childElem = (child() as unknown) as HTMLDivElement;
+    if (replace) {
+      parent.replaceWith(childElem);
+    } else {
+      parent.appendChild(childElem);
+    }
+    return;
+  }
+
+  if (replace) {
+    parent.replaceWith(document.createTextNode(child.toString()));
+  } else {
+    parent.appendChild(document.createTextNode(child.toString()));
+  }
 };
 
 render(document.body, App);
