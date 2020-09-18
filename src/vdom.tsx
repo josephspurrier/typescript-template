@@ -92,50 +92,62 @@ const removeProp = (elem: Node, name: string, value: unknown) => {
   }
 };
 
+interface FragmentAttrs {
+  children: JSX.Vnode[];
+}
+
 export const React = {
+  Fragment: function (attrs: FragmentAttrs): JSX.Vnode[] | string[] {
+    return attrs.children;
+  },
   createElement: (
     tag:
       | string
       | ((attrs: JSX.ElementAttrs, ...children: HTMLElement[]) => JSX.Vnode),
     attrs: JSX.ElementAttrs,
-    ...children: JSX.Vnode[] | string[]
+    ...children: JSX.Vnode[]
   ): JSX.Vnode => {
+    //console.log({ tag, attrs: attrs || {}, children });
     return { tag, attrs: attrs || {}, children };
   },
 };
 
-const createElement = (node: string | JSX.Vnode): HTMLElement => {
-  if (typeof node === 'string') {
-    const $el = document.createElement('span');
-    $el.appendChild(document.createTextNode(node));
-    return $el;
-  }
-
+const createElement = (node: string | JSX.Vnode): Node => {
   // Support functions (closures).
-  const f = node.tag as (
+  const vnode = node as JSX.Vnode;
+  const f = vnode.tag as (
     attrs: JSX.ElementAttrs,
     ...children: HTMLElement[]
   ) => JSX.Vnode;
   if (typeof f === 'function') {
-    node = f({ ...node.attrs, children: node.children });
-  }
-
-  if (typeof node.tag === 'string') {
-    const $el = document.createElement(node.tag);
-    setProps($el, node.attrs);
-
-    if (stringArray(node.children)) {
-      const c = node.children as string[];
-      c.map(createElementText).forEach($el.appendChild.bind($el));
-    } else {
-      const c = node.children as JSX.Vnode[];
-      c.map(createElement).forEach($el.appendChild.bind($el));
+    //console.log('this function:', f);
+    node = f({ ...vnode.attrs, children: vnode.children });
+    //console.log('end node:', node);
+    if (Array.isArray(node)) {
+      const frag = document.createDocumentFragment();
+      node.forEach(function (item: string | JSX.Vnode) {
+        frag.appendChild(createElement(item));
+      });
+      return frag;
     }
-    return $el;
+    return createElement(node);
   }
 
-  // FIXME: Need to remove this.
-  return document.createElement('div');
+  if (vnode && typeof vnode.tag === 'string') {
+    const elem = document.createElement(vnode.tag);
+    setProps(elem, vnode.attrs);
+
+    if (stringArray(vnode.children)) {
+      const c = vnode.children as string[];
+      c.map(createElementText).forEach(elem.appendChild.bind(elem));
+    } else {
+      const c = vnode.children as JSX.Vnode[];
+      c.map(createElement).forEach(elem.appendChild.bind(elem));
+    }
+    return elem;
+  }
+
+  return document.createTextNode(node.toString());
 };
 
 // FIXME: This currently only looks at tag and not attributes, etc.
@@ -219,30 +231,33 @@ interface ButtonAttr {
 const CounterButton = (attrs: ButtonAttr): JSX.Element => {
   let counter = 0;
   return (
-    <button
-      username={attrs.username}
-      onclick={() => {
-        console.log(counter++);
-      }}
-    >
-      Increase Counter
-    </button>
+    <>
+      <button
+        username={attrs.username}
+        onclick={() => {
+          console.log(counter++);
+        }}
+      >
+        Increase Counter
+      </button>
+      <div>Counter: {counter}</div>
+    </>
   );
 };
 
-const CounterButton2 = (attrs: ButtonAttr): JSX.Element => {
-  let counter = 0;
-  return (
-    <button
-      username={attrs.username}
-      onclick={() => {
-        console.log(counter--);
-      }}
-    >
-      Increase Counter
-    </button>
-  );
-};
+// const CounterButton2 = (attrs: ButtonAttr): JSX.Element => {
+//   let counter = 0;
+//   return (
+//     <button
+//       username={attrs.username}
+//       onclick={() => {
+//         console.log(counter--);
+//       }}
+//     >
+//       Increase Counter
+//     </button>
+//   );
+// };
 
 const Simple = () => {
   return <div>simple</div>;
@@ -250,9 +265,11 @@ const Simple = () => {
 
 const App = (): JSX.Element => {
   let username2 = 'jarrod';
-  let counter = 1;
+  //const counter = 100;
   return (
     <app>
+      <CounterButton username={username2} />
+      <div>{counter}</div>
       <CounterButton username={username2} />
       <Simple />
       <button

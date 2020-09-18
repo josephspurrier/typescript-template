@@ -20,6 +20,9 @@ This project supports these features:
 - [x] JSX attributes for strings
 - [x] JSX attributes for booleans (like 'required')
 - [x] JSX event handling for 'on' functions
+- [ ] Virtual Dom
+- [ ] Reactivity
+- [ ] Redrawing
 
 This project uses these tools:
 
