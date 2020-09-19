@@ -4,19 +4,47 @@ export interface ElementAttrs {
 }
 
 export const z = {
-  fragment: function (attrs: { children: HTMLElement[] }): HTMLElement[] {
+  fragment: function (attrs: {
+    children: DocumentFragment[];
+  }): DocumentFragment[] {
     return attrs.children;
   },
   createElement: function (
     tag:
       | string
-      | ((attrs: ElementAttrs, ...children: HTMLElement[]) => HTMLElement),
+      | ((
+          attrs: ElementAttrs,
+          ...children: DocumentFragment[]
+        ) => DocumentFragment)
+      | ((attrs: { children: DocumentFragment[] }) => DocumentFragment[]),
     attrs: ElementAttrs,
-    ...children: HTMLElement[]
-  ): HTMLElement {
-    // Support functions (closures).
+    ...children: DocumentFragment[]
+  ): DocumentFragment {
+    const fragElem = document.createDocumentFragment();
+
+    const appendChild = (
+      parent: HTMLElement | DocumentFragment,
+      child: DocumentFragment,
+    ) => {
+      if (Array.isArray(child))
+        child.forEach((nestedChild) => appendChild(parent, nestedChild));
+      else
+        parent.appendChild(
+          child.nodeType ? child : document.createTextNode(child.toString()),
+        );
+    };
+
+    // Support functions (closures). This could be a functional component or a
+    // fragment function.
     if (typeof tag === 'function') {
-      return tag({ ...attrs, children: children });
+      const fragOrArray = tag({ ...attrs, children: children });
+      if (Array.isArray(fragOrArray)) {
+        fragOrArray.forEach((child) => {
+          appendChild(fragElem, child);
+        });
+        return fragElem;
+      }
+      return fragOrArray;
     }
 
     // Create the element.
@@ -41,20 +69,12 @@ export const z = {
       }
     });
 
-    const appendChild = (parent: HTMLElement, child: HTMLElement) => {
-      if (Array.isArray(child))
-        child.forEach((nestedChild) => appendChild(parent, nestedChild));
-      else
-        parent.appendChild(
-          child.nodeType ? child : document.createTextNode(child.toString()),
-        );
-    };
-
     children.forEach((child) => {
       appendChild(elem, child);
     });
+    fragElem.appendChild(elem);
 
-    return elem;
+    return fragElem;
   },
   render: function (
     parent: HTMLElement,

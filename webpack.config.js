@@ -12,7 +12,8 @@ const ASSET_PATH = '/';
 const DEV = process.env.NODE_ENV !== 'production';
 
 let config = {
-  entry: path.resolve(__dirname, 'src', 'vdom-index'),
+  entry: path.resolve(__dirname, 'src', 'vanilla-index'),
+  //entry: path.resolve(__dirname, 'src', 'vdom-index'),
   plugins: [
     new CleanWebpackPlugin({
       verbose: false,
