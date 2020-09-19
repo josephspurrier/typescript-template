@@ -96,8 +96,8 @@ interface FragmentAttrs {
   children: JSX.Vnode[];
 }
 
-export const React = {
-  Fragment: function (attrs: FragmentAttrs): JSX.Vnode[] | string[] {
+export const z = {
+  fragment: (attrs: FragmentAttrs): JSX.Vnode[] | string[] => {
     return attrs.children;
   },
   createElement: (
@@ -109,6 +109,36 @@ export const React = {
   ): JSX.Vnode => {
     //console.log({ tag, attrs: attrs || {}, children });
     return { tag, attrs: attrs || {}, children };
+  },
+  render: (
+    parent: HTMLElement,
+    child: string | (() => JSX.Element),
+    oldchild?: string | (() => JSX.Element),
+    replace = false,
+  ): void => {
+    if (typeof child === 'function') {
+      const childElem = (child() as unknown) as JSX.Vnode;
+
+      if (replace) {
+        //parent.replaceWith(childElem);
+      } else {
+        if (oldchild && typeof oldchild === 'function') {
+          const oldchildElem = (oldchild() as unknown) as JSX.Vnode;
+          updateElement(parent, childElem, oldchildElem);
+          return;
+        }
+        updateElement(parent, childElem);
+        //parent.appendChild(childElem);
+      }
+      return;
+    }
+
+    if (replace) {
+      //parent.replaceWith(document.createTextNode(child.toString()));
+    } else {
+      //parent.appendChild(document.createTextNode(child.toString()));
+      //updateElement(parent, childElem);
+    }
   },
 };
 
@@ -201,36 +231,5 @@ const updateElement = function (
         i,
       );
     }
-  }
-};
-
-export const render = (
-  parent: HTMLElement,
-  child: string | (() => JSX.Element),
-  oldchild?: string | (() => JSX.Element),
-  replace = false,
-): void => {
-  if (typeof child === 'function') {
-    const childElem = (child() as unknown) as JSX.Vnode;
-
-    if (replace) {
-      //parent.replaceWith(childElem);
-    } else {
-      if (oldchild && typeof oldchild === 'function') {
-        const oldchildElem = (oldchild() as unknown) as JSX.Vnode;
-        updateElement(parent, childElem, oldchildElem);
-        return;
-      }
-      updateElement(parent, childElem);
-      //parent.appendChild(childElem);
-    }
-    return;
-  }
-
-  if (replace) {
-    //parent.replaceWith(document.createTextNode(child.toString()));
-  } else {
-    //parent.appendChild(document.createTextNode(child.toString()));
-    //updateElement(parent, childElem);
   }
 };

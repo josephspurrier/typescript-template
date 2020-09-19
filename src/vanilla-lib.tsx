@@ -3,8 +3,8 @@ export interface ElementAttrs {
   [property: string]: any;
 }
 
-export const React = {
-  Fragment: function (attrs: { children: HTMLElement[] }): HTMLElement[] {
+export const z = {
+  fragment: function (attrs: { children: HTMLElement[] }): HTMLElement[] {
     return attrs.children;
   },
   createElement: function (
@@ -56,29 +56,25 @@ export const React = {
 
     return elem;
   },
-};
-
-// *****************************************************************************
-// *****************************************************************************
-
-export const render = (
-  parent: HTMLElement,
-  child: string | (() => JSX.Element),
-  replace = false,
-): void => {
-  if (typeof child === 'function') {
-    const childElem = (child() as unknown) as HTMLDivElement;
-    if (replace) {
-      parent.replaceWith(childElem);
-    } else {
-      parent.appendChild(childElem);
+  render: function (
+    parent: HTMLElement,
+    child: string | (() => JSX.Element),
+    replace = false,
+  ): void {
+    if (typeof child === 'function') {
+      const childElem = (child() as unknown) as HTMLDivElement;
+      if (replace) {
+        parent.replaceWith(childElem);
+      } else {
+        parent.appendChild(childElem);
+      }
+      return;
     }
-    return;
-  }
 
-  if (replace) {
-    parent.replaceWith(document.createTextNode(child.toString()));
-  } else {
-    parent.appendChild(document.createTextNode(child.toString()));
-  }
+    if (replace) {
+      parent.replaceWith(document.createTextNode(child.toString()));
+    } else {
+      parent.appendChild(document.createTextNode(child.toString()));
+    }
+  },
 };

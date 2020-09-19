@@ -1,9 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { React, render } from '@/vanilla-lib';
-
-const Empty = (): JSX.Element => {
-  return <div>This is a div without attributes or children.</div>;
-};
+import { Empty } from '@/vanilla-empty';
+import { z } from '@/vanilla-lib';
 
 const Destructuring = ({ username }: { username: string }): JSX.Element => {
   return <div>Destructuring should show foo: {username}</div>;
@@ -156,4 +152,4 @@ const App = (): JSX.Element => {
   );
 };
 
-render(document.body, App);
+z.render(document.body, App);

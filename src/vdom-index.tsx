@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { React, render } from '@/vdom-lib';
+import { z } from '@/vdom-lib';
 
 // ---------------------------------------------------------------------
 
@@ -121,11 +120,11 @@ const reload = document.getElementById('reload');
 
 if (root && reload) {
   //updateElement(root, a);
-  render(root, App);
+  z.render(root, App);
   reload.addEventListener('click', () => {
     if (counter === 0) {
       //tempusername = 'jarrod';
-      render(root, App, App);
+      z.render(root, App, App);
       //updateElement(root, b, a);
       //console.log('final a:', a);
       //console.log('final b:', b);

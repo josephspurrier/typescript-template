@@ -16,6 +16,8 @@
     },
     "outDir": "./dist/",
     "jsx": "react",
+    "jsxFactory": "z.createElement",
+    "jsxFragmentFactory": "z.fragment",
     "allowJs": true,
     "checkJs": true
   },
