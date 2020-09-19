@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server --open",
     "watch": "webpack --mode development --debug --output-pathinfo --watch",
-    "build": "webpack -p",
+    "build": "NODE_ENV=production webpack -p",
+    "build-clean": "NODE_ENV=clean webpack -p",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint-fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "stylelint": "stylelint 'src/**/*.{css,scss,json}'",

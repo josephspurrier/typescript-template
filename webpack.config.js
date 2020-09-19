@@ -11,8 +11,8 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ASSET_PATH = '/';
 const DEV = process.env.NODE_ENV !== 'production';
 
-module.exports = {
-  entry: path.resolve(__dirname, 'src', 'vdom'),
+let config = {
+  entry: path.resolve(__dirname, 'src', 'novdom-index'),
   plugins: [
     new CleanWebpackPlugin({
       verbose: false,
@@ -61,11 +61,13 @@ module.exports = {
     publicPath: ASSET_PATH,
   },
   optimization: {
+    minimize: true,
+    runtimeChunk: false,
     splitChunks: {
       chunks: 'all',
     },
   },
-  devtool: DEV ? 'eval-cheap-module-source-map' : 'source-map',
+  devtool: 'eval-cheap-module-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
     historyApiFallback: true,
@@ -125,3 +127,13 @@ module.exports = {
     ],
   },
 };
+
+if (process.env.NODE_ENV === 'production') {
+  config.devtool = 'source-map';
+} else if (process.env.NODE_ENV === 'clean') {
+  config.devtool = 'none';
+  config.optimization.minimize = false;
+  config.optimization.runtimeChunk = true;
+}
+
+module.exports = config;
