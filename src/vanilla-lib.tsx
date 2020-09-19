@@ -33,7 +33,7 @@ export const z = {
     ...children: DocumentFragment[]
   ): DocumentFragment {
     // Create the document fragment.
-    const fragElem = document.createDocumentFragment();
+    const frag = document.createDocumentFragment();
 
     // Support functions (closures). This could be a functional component or a
     // fragment function.
@@ -41,9 +41,9 @@ export const z = {
       const fragOrArray = tag({ ...attrs, children: children });
       if (Array.isArray(fragOrArray)) {
         fragOrArray.forEach((child) => {
-          appendChild(fragElem, child);
+          appendChild(frag, child);
         });
-        return fragElem;
+        return frag;
       }
       return fragOrArray;
     }
@@ -74,9 +74,9 @@ export const z = {
     children.forEach((child) => {
       appendChild(elem, child);
     });
-    fragElem.appendChild(elem);
+    frag.appendChild(elem);
 
-    return fragElem;
+    return frag;
   },
   render: function (
     parent: HTMLElement,
