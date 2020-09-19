@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { React, render } from '@/novdom-lib';
+import { React, render } from '@/vanilla-lib';
 
 const Empty = (): JSX.Element => {
   return <div>This is a div without attributes or children.</div>;
