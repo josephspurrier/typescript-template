@@ -142,7 +142,28 @@ export const z = {
   },
 };
 
+const appendChild = (
+  parent: HTMLElement | DocumentFragment,
+  child: string[] | JSX.Vnode | JSX.Vnode[],
+) => {
+  if (Array.isArray(child))
+    if (stringArray(child)) {
+      (child as string[]).forEach((nestedChild: string) =>
+        parent.appendChild(document.createTextNode(nestedChild.toString())),
+      );
+    } else {
+      (child as JSX.Vnode[]).forEach((nestedChild) =>
+        appendChild(parent, nestedChild),
+      );
+    }
+  else {
+    parent.appendChild(createElement(child));
+  }
+};
+
 const createElement = (node: string | JSX.Vnode): Node => {
+  const frag = document.createDocumentFragment();
+
   // Support functions (closures).
   const vnode = node as JSX.Vnode;
   const f = vnode.tag as (
@@ -150,13 +171,10 @@ const createElement = (node: string | JSX.Vnode): Node => {
     ...children: HTMLElement[]
   ) => JSX.Vnode;
   if (typeof f === 'function') {
-    //console.log('this function:', f);
     node = f({ ...vnode.attrs, children: vnode.children });
-    //console.log('end node:', node);
     if (Array.isArray(node)) {
-      const frag = document.createDocumentFragment();
-      node.forEach(function (item: string | JSX.Vnode) {
-        frag.appendChild(createElement(item));
+      node.forEach(function (item: string[] | JSX.Vnode | JSX.Vnode[]) {
+        appendChild(frag, item);
       });
       return frag;
     }
@@ -167,17 +185,15 @@ const createElement = (node: string | JSX.Vnode): Node => {
     const elem = document.createElement(vnode.tag);
     setProps(elem, vnode.attrs);
 
-    if (stringArray(vnode.children)) {
-      const c = vnode.children as string[];
-      c.map(createElementText).forEach(elem.appendChild.bind(elem));
-    } else {
-      const c = vnode.children as JSX.Vnode[];
-      c.map(createElement).forEach(elem.appendChild.bind(elem));
-    }
-    return elem;
+    // TODO: Determine why one article suggested to use:
+    // elem.appendChild.bind(elem)
+    appendChild(elem, vnode.children);
+    frag.appendChild(elem);
+    return frag;
   }
 
-  return document.createTextNode(node.toString());
+  frag.appendChild(document.createTextNode(node.toString()));
+  return frag;
 };
 
 // FIXME: This currently only looks at tag and not attributes, etc.
