@@ -114,30 +114,16 @@ export const z = {
     parent: HTMLElement,
     child: string | (() => JSX.Element),
     oldchild?: string | (() => JSX.Element),
-    replace = false,
   ): void => {
     if (typeof child === 'function') {
       const childElem = (child() as unknown) as JSX.Vnode;
-
-      if (replace) {
-        //parent.replaceWith(childElem);
-      } else {
-        if (oldchild && typeof oldchild === 'function') {
-          const oldchildElem = (oldchild() as unknown) as JSX.Vnode;
-          updateElement(parent, childElem, oldchildElem);
-          return;
-        }
-        updateElement(parent, childElem);
-        //parent.appendChild(childElem);
+      if (oldchild && typeof oldchild === 'function') {
+        const oldchildElem = (oldchild() as unknown) as JSX.Vnode;
+        updateElement(parent, childElem, oldchildElem);
+        return;
       }
+      updateElement(parent, childElem);
       return;
-    }
-
-    if (replace) {
-      //parent.replaceWith(document.createTextNode(child.toString()));
-    } else {
-      //parent.appendChild(document.createTextNode(child.toString()));
-      //updateElement(parent, childElem);
     }
   },
 };
@@ -161,7 +147,7 @@ const appendChild = (
   }
 };
 
-const createElement = (node: string | JSX.Vnode): Node => {
+const createElement = (node: string | JSX.Vnode): DocumentFragment => {
   const frag = document.createDocumentFragment();
 
   // Support functions (closures).
