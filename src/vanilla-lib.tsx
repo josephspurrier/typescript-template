@@ -3,6 +3,18 @@ export interface ElementAttrs {
   [property: string]: any;
 }
 
+const appendChild = (
+  parent: HTMLElement | DocumentFragment,
+  child: DocumentFragment,
+) => {
+  if (Array.isArray(child))
+    child.forEach((nestedChild) => appendChild(parent, nestedChild));
+  else
+    parent.appendChild(
+      child.nodeType ? child : document.createTextNode(child.toString()),
+    );
+};
+
 export const z = {
   fragment: function (attrs: {
     children: DocumentFragment[];
@@ -20,19 +32,8 @@ export const z = {
     attrs: ElementAttrs,
     ...children: DocumentFragment[]
   ): DocumentFragment {
+    // Create the document fragment.
     const fragElem = document.createDocumentFragment();
-
-    const appendChild = (
-      parent: HTMLElement | DocumentFragment,
-      child: DocumentFragment,
-    ) => {
-      if (Array.isArray(child))
-        child.forEach((nestedChild) => appendChild(parent, nestedChild));
-      else
-        parent.appendChild(
-          child.nodeType ? child : document.createTextNode(child.toString()),
-        );
-    };
 
     // Support functions (closures). This could be a functional component or a
     // fragment function.
@@ -69,6 +70,7 @@ export const z = {
       }
     });
 
+    // Append each child (recursive).
     children.forEach((child) => {
       appendChild(elem, child);
     });
