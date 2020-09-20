@@ -1,20 +1,19 @@
-import { useState } from '@/lib/state';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { z } from '@/lib/z';
+import { useState } from '@/lib/state';
 
 export const RedrawButtons = (): JSX.Element => {
   const [count, setCount] = useState(0);
+  const [count2, setCount2] = useState(0);
   return (
     <>
       <button
         onclick={() => {
           setTimeout(() => {
-            //z.redraw();
             setCount(count() + 1);
           }, 1000);
         }}
       >
-        Timer: Click Then Redraw Below ({count()} clicks)
+        1 Second Timer without Redraw ({count()} clicks)
       </button>
 
       <button
@@ -22,7 +21,18 @@ export const RedrawButtons = (): JSX.Element => {
           z.redraw();
         }}
       >
-        Redraw
+        Manual Redraw
+      </button>
+
+      <button
+        onclick={() => {
+          setTimeout(() => {
+            setCount2(count2() + 1);
+            z.redraw();
+          }, 1000);
+        }}
+      >
+        1 Second Timer with Redraw ({count2()} clicks)
       </button>
     </>
   );
