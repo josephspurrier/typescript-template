@@ -1,4 +1,5 @@
 import { Empty } from '@/vdom-empty';
+import { FragLevel1 } from '@/vdom-fragments';
 import { z } from '@/vdom-lib';
 import { State } from '@/vdom-state';
 
@@ -130,6 +131,12 @@ const App = (): JSX.Element => {
       <State />
       <State />
       <span>Last text here.</span>
+
+      <hr />
+
+      <FragLevel1 />
+
+      <hr />
 
       <p>
         <strong>Below are list items from an array:</strong>

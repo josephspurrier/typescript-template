@@ -375,6 +375,7 @@ export const z = {
     globalStateCounter = -1;
     const latestState = (initialElement() as unknown) as JSX.Vnode;
     if (!initialState.tag) {
+      console.log('initial state:', latestState);
       initialState = removeFragments(latestState);
       console.log('post clean state:', initialState);
       updateElement(rootParent, initialState);
@@ -405,8 +406,35 @@ export const z = {
 const globalState = [] as unknown[];
 let globalStateCounter = -1;
 
-const cleanChildren = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
-  return vn.children;
+const childLoop = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
+  const rChildren = [] as (string | JSX.Vnode)[];
+  vn.children.forEach((element: JSX.Vnode | string) => {
+    const vc = element as JSX.Vnode;
+    if (vc.tag) {
+      if (vc.tag === 'FRAGMENT') {
+        rChildren.push(...cleanChildren(vc));
+      } else {
+        rChildren.push(removeFragments(vc));
+      }
+    } else {
+      rChildren.push(element);
+    }
+  });
+
+  return rChildren;
+};
+
+const cleanChildren = (vn: JSX.Vnode | string): (string | JSX.Vnode)[] => {
+  let rChildren = [] as (string | JSX.Vnode)[];
+
+  const vNode = vn as JSX.Vnode;
+  if (vNode.tag) {
+    rChildren = childLoop(vNode);
+  } else {
+    return [vn] as string[];
+  }
+
+  return rChildren;
 };
 
 const removeFragments = (vn: JSX.Vnode): JSX.Vnode => {
@@ -414,19 +442,7 @@ const removeFragments = (vn: JSX.Vnode): JSX.Vnode => {
     children: [] as (string | JSX.Vnode)[],
   } as JSX.Vnode;
 
-  vn.children.forEach((element: JSX.Vnode | string) => {
-    const vc = element as JSX.Vnode;
-    if (vc.tag) {
-      if (vc.tag === 'FRAGMENT') {
-        rVnode.children.push(...cleanChildren(vc));
-      } else {
-        rVnode.children.push(removeFragments(vc));
-      }
-    } else {
-      rVnode.children.push(element);
-    }
-  });
-
+  rVnode.children = childLoop(vn);
   rVnode.tag = vn.tag;
   rVnode.attrs = vn.attrs;
   return rVnode;
