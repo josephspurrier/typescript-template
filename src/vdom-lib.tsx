@@ -1,6 +1,6 @@
 // Store the previous state.
-let initialState = {} as JSX.Vnode;
-let initialElement: () => JSX.Element;
+let currentState = {} as JSX.Vnode;
+let generateRawState: () => JSX.Element;
 let rootParent: HTMLElement;
 
 const createElementText = (node: string): Text => {
@@ -365,7 +365,7 @@ export const z = {
   render: (parent: HTMLElement, child: string | (() => JSX.Element)): void => {
     if (typeof child === 'function') {
       rootParent = parent;
-      initialElement = child;
+      generateRawState = child;
     }
 
     z.redraw();
@@ -373,14 +373,16 @@ export const z = {
   redraw: (): void => {
     console.log('called: redraw!');
     globalStateCounter = -1;
-    const latestState = (initialElement() as unknown) as JSX.Vnode;
-    if (!initialState.tag) {
-      console.log('initial state:', latestState);
-      initialState = removeFragments(latestState);
-      console.log('post clean state:', initialState);
-      updateElement(rootParent, initialState);
+    const rawDesiredState = (generateRawState() as unknown) as JSX.Vnode;
+    if (!currentState.tag) {
+      console.log('initial state:', rawDesiredState);
+      currentState = removeFragments(rawDesiredState);
+      console.log('post clean state:', currentState);
+      updateElement(rootParent, currentState);
     } else {
-      updateElement(rootParent, removeFragments(latestState), initialState);
+      const desiredState = removeFragments(rawDesiredState);
+      updateElement(rootParent, desiredState, currentState);
+      currentState = desiredState;
       //console.log('output:', latestState, initialState);
     }
   },
