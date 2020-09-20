@@ -406,44 +406,30 @@ export const z = {
 const globalState = [] as unknown[];
 let globalStateCounter = -1;
 
-const childLoop = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
-  const rChildren = [] as (string | JSX.Vnode)[];
-  vn.children.forEach((element: JSX.Vnode | string) => {
-    const vc = element as JSX.Vnode;
-    if (vc.tag) {
-      if (vc.tag === 'FRAGMENT') {
-        rChildren.push(...cleanChildren(vc));
-      } else {
-        rChildren.push(removeFragments(vc));
-      }
-    } else {
-      rChildren.push(element);
-    }
-  });
-
-  return rChildren;
-};
-
-const cleanChildren = (vn: JSX.Vnode | string): (string | JSX.Vnode)[] => {
-  let rChildren = [] as (string | JSX.Vnode)[];
-
-  const vNode = vn as JSX.Vnode;
-  if (vNode.tag) {
-    rChildren = childLoop(vNode);
-  } else {
-    return [vn] as string[];
-  }
-
-  return rChildren;
-};
-
+// Removes any "FRAGMENT" elements from the state to make the dom comparisons
+// easier to work with.
 const removeFragments = (vn: JSX.Vnode): JSX.Vnode => {
-  const rVnode = {
-    children: [] as (string | JSX.Vnode)[],
-  } as JSX.Vnode;
+  const cleanChildren = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
+    const rChildren = [] as (string | JSX.Vnode)[];
+    vn.children.forEach((element: JSX.Vnode | string) => {
+      const vc = element as JSX.Vnode;
+      if (vc.tag) {
+        if (vc.tag === 'FRAGMENT') {
+          rChildren.push(...cleanChildren(vc));
+        } else {
+          rChildren.push(removeFragments(vc));
+        }
+      } else {
+        rChildren.push(element);
+      }
+    });
 
-  rVnode.children = childLoop(vn);
-  rVnode.tag = vn.tag;
-  rVnode.attrs = vn.attrs;
-  return rVnode;
+    return rChildren;
+  };
+
+  return {
+    tag: vn.tag,
+    attrs: vn.attrs,
+    children: cleanChildren(vn),
+  } as JSX.Vnode;
 };
