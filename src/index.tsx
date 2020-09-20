@@ -1,7 +1,7 @@
-import { Empty } from '@/vdom-empty';
-import { FragLevel1 } from '@/vdom-fragments';
 import { z } from '@/lib/z';
-import { State } from '@/vdom-state';
+import { Empty } from '@/component/empty';
+import { FragLevel1 } from '@/component/fragments';
+import { State } from '@/component/state';
 
 const Destructuring = ({ username }: { username: string }): JSX.Element => {
   return <div>Destructuring should show foo: {username}</div>;
@@ -150,40 +150,7 @@ const App = (): JSX.Element => {
   );
 };
 
-//z.render(document.body, App);
-
-//const counter = 0;
-
-// const button = document.createElement('button');
-// button.setAttribute('id', 'reload');
-// button.textContent = 'Reload';
-// document.body.appendChild(button);
-
 const rootElem = document.createElement('div');
 rootElem.setAttribute('id', 'root');
 document.body.appendChild(rootElem);
-
-const root = document.getElementById('root');
-//const reload = document.getElementById('reload');
-
-if (root) {
-  //updateElement(root, a);
-  z.render(root, App);
-  //   reload.addEventListener('click', () => {
-  //     if (counter === 0) {
-  //       //tempusername = 'jarrod';
-  //       z.render(root, App, App);
-  //       //updateElement(root, b, a);
-  //       //console.log('final a:', a);
-  //       //console.log('final b:', b);
-  //       counter++;
-  //     } else {
-  //       //render(root, b, b);
-  //       //updateElement(root, b, b);
-  //       //console.log('final a:', a);
-  //       //console.log('final b:', b);
-  //     }
-  //   });
-} else {
-  console.log('Something is wrong...');
-}
+z.render(rootElem, App);
