@@ -29,7 +29,7 @@ declare namespace JSX {
       | string
       | ((attrs: JSX.ElementAttrs, ...children: HTMLElement[]) => Vnode);
     attrs: ElementAttrs;
-    children: Vnode[] | string[];
+    children: (string | Vnode)[];
   }
   interface IntrinsicElements {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

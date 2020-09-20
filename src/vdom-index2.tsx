@@ -121,21 +121,21 @@ const reload = document.getElementById('reload');
 if (root && reload) {
   //updateElement(root, a);
   z.render(root, App);
-  reload.addEventListener('click', () => {
-    if (counter === 0) {
-      //tempusername = 'jarrod';
-      z.render(root, App, App);
-      //updateElement(root, b, a);
-      //console.log('final a:', a);
-      //console.log('final b:', b);
-      counter++;
-    } else {
-      //render(root, b, b);
-      //updateElement(root, b, b);
-      //console.log('final a:', a);
-      //console.log('final b:', b);
-    }
-  });
+  // reload.addEventListener('click', () => {
+  //   if (counter === 0) {
+  //     //tempusername = 'jarrod';
+  //     z.render(root, App, App);
+  //     //updateElement(root, b, a);
+  //     //console.log('final a:', a);
+  //     //console.log('final b:', b);
+  //     counter++;
+  //   } else {
+  //     //render(root, b, b);
+  //     //updateElement(root, b, b);
+  //     //console.log('final a:', a);
+  //     //console.log('final b:', b);
+  //   }
+  // });
 } else {
   console.log('Something is wrong...');
 }

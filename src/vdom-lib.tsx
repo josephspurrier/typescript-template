@@ -7,7 +7,7 @@ const createElementText = (node: string): Text => {
   return document.createTextNode(node);
 };
 
-const stringArray = (value: string[] | JSX.Vnode[]): boolean => {
+const stringArray = (value: (JSX.Vnode | string)[]): boolean => {
   if (Array.isArray(value)) {
     let notString = true;
     value.forEach(function (item: unknown) {
@@ -66,6 +66,7 @@ const addEventListeners = (elem: HTMLElement, attrs: JSX.ElementAttrs) => {
       elem.addEventListener(extractEventName(name), attrs[name]);
       elem.addEventListener(extractEventName(name), () => {
         // setTimeout(() => {
+        console.log('caught!');
         z.redraw();
         // }, 1000);
       });
@@ -125,9 +126,9 @@ interface FragmentAttrs {
 
 const appendChild = (
   parent: HTMLElement | DocumentFragment,
-  child: string[] | JSX.Vnode | JSX.Vnode[],
+  child: (string | JSX.Vnode)[] | JSX.Vnode,
 ) => {
-  if (Array.isArray(child))
+  if (Array.isArray(child)) {
     if (stringArray(child)) {
       (child as string[]).forEach((nestedChild: string) => {
         //console.log('string?', nestedChild.toString());
@@ -138,7 +139,7 @@ const appendChild = (
         appendChild(parent, nestedChild),
       );
     }
-  else {
+  } else {
     parent.appendChild(createElement(child));
   }
 };
@@ -154,6 +155,7 @@ const createElement = (node: string | JSX.Vnode): DocumentFragment => {
   ) => JSX.Vnode;
   if (typeof f === 'function') {
     node = f({ ...vnode.attrs, children: vnode.children });
+    //console.log('node:', node);
     if (Array.isArray(node)) {
       node.forEach(function (item: string[] | JSX.Vnode | JSX.Vnode[]) {
         appendChild(frag, item);
@@ -164,14 +166,20 @@ const createElement = (node: string | JSX.Vnode): DocumentFragment => {
   }
 
   if (vnode && typeof vnode.tag === 'string') {
-    const elem = document.createElement(vnode.tag);
-    setProps(elem, vnode.attrs);
-    addEventListeners(elem, vnode.attrs);
+    if (vnode.tag === 'FRAGMENT') {
+      appendChild(frag, vnode.children);
+      //setProps(frag, vnode.attrs);
+      //addEventListeners(frag, vnode.attrs);
+    } else {
+      const elem = document.createElement(vnode.tag);
+      setProps(elem, vnode.attrs);
+      addEventListeners(elem, vnode.attrs);
+      // TODO: Determine why one article suggested to use:
+      // elem.appendChild.bind(elem)
+      appendChild(elem, vnode.children);
+      frag.appendChild(elem);
+    }
 
-    // TODO: Determine why one article suggested to use:
-    // elem.appendChild.bind(elem)
-    appendChild(elem, vnode.children);
-    frag.appendChild(elem);
     return frag;
   }
 
@@ -188,7 +196,11 @@ const changed = function (
   //console.log('changed text?', node1, node2);
   if (typeof node1 !== typeof node2) {
     return true;
-  } else if ((node1 as JSX.Vnode) && (node1 as JSX.Vnode).attrs.forceUpdate) {
+  } else if (
+    (node1 as JSX.Vnode) &&
+    (node1 as JSX.Vnode).attrs &&
+    (node1 as JSX.Vnode).attrs.forceUpdate
+  ) {
     return true;
   } else if (typeof node1 === 'string' && node1 !== node2) {
     return true;
@@ -202,6 +214,7 @@ const changed = function (
   return false;
 };
 
+// Accepts either a Vnode or a string and makes the changes on the DOM.
 const updateElement = function (
   parent: Node,
   newNode: JSX.Vnode | string,
@@ -210,30 +223,38 @@ const updateElement = function (
 ) {
   //console.log('here?', newNode, oldNode);
   if (oldNode === undefined) {
+    //parent.appendChild(createElementText(newNode));
     // console.log('element changed 0');
     // console.log('element changed - newNode:', newNode);
     // console.log('element changed - oldNode:', oldNode);
     if (typeof newNode === 'string') {
       //console.log('found it3:', newNode);
       parent.appendChild(createElementText(newNode));
-    } else {
-      //console.log('found it4:', newNode);
-      parent.appendChild(createElement(newNode));
+      return;
     }
+    //console.log('found it4:', newNode);
+    parent.appendChild(createElement(newNode));
   } else if (newNode === undefined) {
     parent.removeChild(parent.childNodes[index]);
   } else if (
     (typeof newNode === 'string' && typeof oldNode === 'string') ||
     (typeof newNode === 'number' && typeof oldNode === 'number')
   ) {
-    //console.log('found it5:', newNode);
+    //console.log('found it5:', newNode, oldNode, parent, index);
     if (newNode !== oldNode) {
       //console.log('found it2:', newNode, oldNode, parent);
       //updateElement(parent, newNode, oldNode);
-      parent.replaceChild(createElementText(newNode), parent.childNodes[index]);
+      if (parent) {
+        parent.replaceChild(
+          createElementText(newNode),
+          parent.childNodes[index],
+        );
+      } else {
+        console.log('skipped:', typeof newNode);
+      }
     }
   } else if (changed(newNode, oldNode)) {
-    //console.log('element changed 1:', newNode);
+    //console.log('element changed 1:', newNode, oldNode);
     if (typeof newNode === 'string') {
       parent.replaceChild(createElementText(newNode), parent.childNodes[index]);
     } else {
@@ -243,17 +264,50 @@ const updateElement = function (
   } else if ((newNode as JSX.Vnode) && (oldNode as JSX.Vnode)) {
     const newVnode = newNode as JSX.Vnode;
     const oldVnode = oldNode as JSX.Vnode;
+    // console.log(
+    //   'Fragment?',
+    //   newVnode.tag,
+    //   oldVnode.tag,
+    //   parent,
+    //   parent.childNodes,
+    // );
+
+    // if (newVnode.tag === 'FRAGMENT') {
+    //   updateElement(parent, newVnode, oldVnode, 0);
+    //   return;
+    // }
     //console.log('before error:', newVnode, oldVnode);
     updateProps(parent.childNodes[index], newVnode.attrs, oldVnode.attrs);
     const newLength = newVnode.children.length;
     const oldLength = oldVnode.children.length;
+
+    // console.log(
+    //   'parent check:',
+    //   parent.childNodes[index],
+    //   index,
+    //   parent.childNodes,
+    // );
+
     for (let i = 0; i < newLength || i < oldLength; i++) {
+      // console.log(
+      //   'new node:',
+      //   newVnode.children[i],
+      //   '| old node:',
+      //   oldVnode.children[i],
+      //   // '| will attach to this parent:',
+      //   // parent,
+      //   '| at this location:',
+      //   parent.childNodes[index],
+      //   '| on this index:',
+      //   i,
+      // );
       updateElement(
         parent.childNodes[index],
         newVnode.children[i],
         oldVnode.children[i],
         i,
       );
+      //}
     }
   } else {
     // FIXME: This is probably a number, should probably not be a number;
@@ -278,14 +332,37 @@ export const z = {
     attrs: JSX.ElementAttrs,
     ...children: JSX.Vnode[]
   ): JSX.Vnode => {
-    //console.log({ tag, attrs: attrs || {}, children });
-    return { tag, attrs: attrs || {}, children };
+    //console.log('actual:', { tag, attrs: attrs || {}, children });
+    const getChildren = (arr: JSX.Vnode[]): JSX.Vnode[] => {
+      let r: JSX.Vnode[] = [];
+
+      arr.forEach((element) => {
+        if (Array.isArray(element)) {
+          r = [...r, ...getChildren(element)];
+        } else {
+          r.push(element);
+        }
+      });
+
+      return r;
+    };
+
+    if (typeof tag === 'string') {
+      return { tag, attrs: attrs || {}, children: getChildren(children) };
+    }
+
+    const node = tag({ ...attrs, children: getChildren(children) });
+
+    if (Array.isArray(node)) {
+      return {
+        tag: 'FRAGMENT',
+        attrs: attrs || {},
+        children: getChildren(node),
+      };
+    }
+    return node;
   },
-  render: (
-    parent: HTMLElement,
-    child: string | (() => JSX.Element),
-    // oldchild?: string | (() => JSX.Element),
-  ): void => {
+  render: (parent: HTMLElement, child: string | (() => JSX.Element)): void => {
     if (typeof child === 'function') {
       rootParent = parent;
       initialElement = child;
@@ -298,23 +375,24 @@ export const z = {
     globalStateCounter = -1;
     const latestState = (initialElement() as unknown) as JSX.Vnode;
     if (!initialState.tag) {
-      //console.log('initial state!');
-      initialState = latestState;
-      updateElement(rootParent, latestState);
+      initialState = removeFragments(latestState);
+      console.log('post clean state:', initialState);
+      updateElement(rootParent, initialState);
     } else {
-      //console.log('new state!');
-      updateElement(rootParent, latestState, initialState);
+      updateElement(rootParent, removeFragments(latestState), initialState);
       //console.log('output:', latestState, initialState);
     }
   },
   useState: function <T>(v: T): [() => T, (val: T) => void] {
     globalStateCounter++;
+    //console.log('setState!', globalStateCounter);
     const localCounter = globalStateCounter;
     if (globalState[localCounter] === undefined) {
       globalState[localCounter] = v;
     }
     return [
       (): T => {
+        //console.log('stateRead!', localCounter, globalState[localCounter]);
         return globalState[localCounter] as T;
       },
       (val: T): void => {
@@ -326,3 +404,30 @@ export const z = {
 
 const globalState = [] as unknown[];
 let globalStateCounter = -1;
+
+const cleanChildren = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
+  return vn.children;
+};
+
+const removeFragments = (vn: JSX.Vnode): JSX.Vnode => {
+  const rVnode = {
+    children: [] as (string | JSX.Vnode)[],
+  } as JSX.Vnode;
+
+  vn.children.forEach((element: JSX.Vnode | string) => {
+    const vc = element as JSX.Vnode;
+    if (vc.tag) {
+      if (vc.tag === 'FRAGMENT') {
+        rVnode.children.push(...cleanChildren(vc));
+      } else {
+        rVnode.children.push(removeFragments(vc));
+      }
+    } else {
+      rVnode.children.push(element);
+    }
+  });
+
+  rVnode.tag = vn.tag;
+  rVnode.attrs = vn.attrs;
+  return rVnode;
+};
