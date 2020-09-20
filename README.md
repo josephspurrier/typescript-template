@@ -1,6 +1,6 @@
 # TypeScript Template
 
-This is a WIP while testing how JSX works without React.
+**This is a WIP while testing how JSX works without React. Don't use this in production - it's designed as a learning tool to understand the internals of front-end frameworks.**
 
 It does support JSX via .jsx or .tsx file extensions. This project is designed to show how modern, front-end development tools integrate. It takes a while to piece together your own tools for linting, building, testing, etc. so you can reference this to see how to get all these different tools set up and integrated.
 
@@ -20,9 +20,17 @@ This project supports these features:
 - [x] JSX attributes for strings
 - [x] JSX attributes for booleans (like 'required')
 - [x] JSX event handling for 'on' functions
-- [ ] Virtual Dom
-- [ ] Reactivity
-- [ ] Redrawing
+- [x] Virtual DOM
+- [x] Reactivity
+- [x] Redrawing on click events
+- [x] Local variable state using 'useState'
+- [ ] Router
+- [ ] Request Handling
+- [ ] Lifecycle methods
+- [ ] Performence testing
+- [ ] Unit tests
+- [ ] Clean up the types
+- [ ] Launch on NPM to see how the process works
 
 This project uses these tools:
 
