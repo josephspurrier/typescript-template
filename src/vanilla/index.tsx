@@ -1,5 +1,5 @@
-import { Empty } from '@/vanilla/vanilla-empty';
-import { z } from '@/vanilla/vanilla-lib';
+import { Empty } from '@/vanilla/empty';
+import { z } from '@/vanilla/lib';
 
 const Destructuring = ({ username }: { username: string }): JSX.Element => {
   return <div>Destructuring should show foo: {username}</div>;
