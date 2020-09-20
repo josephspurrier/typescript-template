@@ -204,6 +204,8 @@ const changed = function (
   //console.log('changed text?', node1, node2);
   if (typeof node1 !== typeof node2) {
     return true;
+  } else if ((node1 as JSX.Vnode) && (node1 as JSX.Vnode).attrs.forceUpdate) {
+    return true;
   } else if (typeof node1 === 'string' && node1 !== node2) {
     return true;
   } else if (typeof node1 !== 'string' && typeof node2 !== 'string') {
@@ -211,9 +213,6 @@ const changed = function (
       return true;
     }
     return false;
-  } else if ((node1 as JSX.Vnode) && (node1 as JSX.Vnode).attrs.forceUpdate) {
-    console.log('whoops');
-    return true;
   }
 
   return false;

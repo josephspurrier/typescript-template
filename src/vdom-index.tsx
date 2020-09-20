@@ -139,7 +139,7 @@ const App = (): JSX.Element => {
         Global counter: {globalCounter} (unfortunately, this won't update on
         click)
       </div>
-      <div forceUpdate='true'>
+      <div>
         Local counter: {localCounter} (unfortunately, this won't update on
         click)
       </div>
