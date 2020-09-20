@@ -13,6 +13,9 @@ export const createFragment = (
 export const removeFragments = (vn: JSX.Vnode): JSX.Vnode => {
   const cleanChildren = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
     const rChildren = [] as (string | JSX.Vnode)[];
+    if (!vn.children) {
+      vn.children = [];
+    }
     vn.children.forEach((element: JSX.Vnode | string) => {
       const vc = element as JSX.Vnode;
       if (vc.tag) {

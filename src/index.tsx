@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { z } from '@/lib/z';
 import { Empty } from '@/component/empty';
 import { FragLevel1 } from '@/component/fragments';
@@ -90,6 +91,10 @@ const alphabet = ['Alpha', 'Bravo', 'Charlie'];
 const App = (): JSX.Element => {
   return (
     <div class='app'>
+      <a title='home' href='#/'>
+        Back
+      </a>
+
       <p>Welcome back, {firstname}.</p>
 
       <Empty></Empty>
@@ -149,4 +154,66 @@ const App = (): JSX.Element => {
 const rootElem = document.createElement('div');
 rootElem.setAttribute('id', 'root');
 document.body.appendChild(rootElem);
-z.render(rootElem, App);
+//z.render(rootElem, App);
+
+const Index = (): JSX.Element => {
+  return (
+    <div>
+      <div>
+        <a title='page1' href='#/page1'>
+          Go to Page 1
+        </a>
+      </div>
+      <div>
+        <a title='page2' href='#/page2'>
+          Go to Page 2
+        </a>
+      </div>
+      <div>
+        <a title='error' href='#/404'>
+          Go to Error Page
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const Page1 = (): JSX.Element => {
+  return (
+    <div class='app'>
+      <p>Page 1.</p>
+      <a title='home' href='#/'>
+        Back
+      </a>
+    </div>
+  );
+};
+
+// const Page2 = (): JSX.Element => {
+//   return (
+//     <div class='app'>
+//       <p>Page 2.</p>
+//       <a title='home' href='#/'>
+//         Back
+//       </a>
+//     </div>
+//   );
+// };
+
+const ErrorPage = (): JSX.Element => {
+  return (
+    <div>
+      <div>404 Page not found</div>
+      <a title='home' href='#/'>
+        Back
+      </a>
+    </div>
+  );
+};
+
+z.state.routerPrefix = '#';
+
+z.route(rootElem, '/', Index);
+z.route(rootElem, '/page1', Page1);
+z.route(rootElem, '/page2', App);
+z.route(rootElem, '/404', ErrorPage);

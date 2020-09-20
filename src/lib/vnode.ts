@@ -8,10 +8,10 @@ export const createVnode = (
     | string
     | ((attrs: JSX.ElementAttrs, ...children: HTMLElement[]) => JSX.Vnode),
   attrs: JSX.ElementAttrs,
-  ...children: JSX.Vnode[]
+  ...children: (JSX.Vnode | string)[]
 ): JSX.Vnode => {
-  const getChildren = (arr: JSX.Vnode[]): JSX.Vnode[] => {
-    let r: JSX.Vnode[] = [];
+  const getChildren = (arr: (JSX.Vnode | string)[]): (JSX.Vnode | string)[] => {
+    let r: (JSX.Vnode | string)[] = [];
 
     arr.forEach((element) => {
       if (Array.isArray(element)) {

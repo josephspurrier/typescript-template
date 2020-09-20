@@ -9,7 +9,9 @@ export const redraw = (): void => {
 
   const rawDesiredState = (z.state.generateRawState() as unknown) as JSX.Vnode;
   if (!z.state.currentState.tag) {
+    console.log('early-state:', rawDesiredState);
     z.state.currentState = removeFragments(rawDesiredState);
+    console.log('state:', z.state.currentState);
     updateElement(z.state.rootParent, z.state.currentState);
   } else {
     const desiredState = removeFragments(rawDesiredState);

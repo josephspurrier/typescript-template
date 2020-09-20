@@ -24,7 +24,10 @@ This project supports these features:
 - [x] Reactivity
 - [x] Redrawing on click events
 - [x] Local variable state using 'useState'
-- [ ] Router
+- [x] Router
+- [x] 404 page
+- [x] Hashtag prefix handling
+- [ ] Router and virtual DOM handling
 - [ ] Request Handling
 - [ ] Lifecycle methods
 - [ ] Performence testing

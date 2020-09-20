@@ -3,6 +3,7 @@ import { useState } from '@/lib/state';
 import { createVnode } from '@/lib/vnode';
 import { createFragment } from '@/lib/fragment';
 import { redraw } from '@/lib/vdom';
+import { route } from '@/lib/router';
 
 export const z = {
   state: {
@@ -16,10 +17,15 @@ export const z = {
     globalState: [] as unknown[],
     // Counter for local variables.
     globalStateCounter: -1,
+    // Router state.
+    routerActive: false,
+    // Router prefix.
+    routerPrefix: '#',
   },
   fragment: createFragment,
   createElement: createVnode,
   render: render,
   redraw: redraw,
   useState: useState,
+  route: route,
 };
