@@ -2,6 +2,7 @@ import { z } from '@/lib/z';
 import { Empty } from '@/component/empty';
 import { FragLevel1 } from '@/component/fragments';
 import { State } from '@/component/state';
+import { RedrawButtons } from '@/component/redraw';
 
 const Destructuring = ({ username }: { username: string }): JSX.Element => {
   return <div>Destructuring should show foo: {username}</div>;
@@ -105,14 +106,6 @@ const App = (): JSX.Element => {
 
       <TwoFragments username='josephspurrier' />
 
-      <button
-        onclick={() => {
-          z.redraw();
-        }}
-      >
-        Redraw
-      </button>
-
       <FragmentChild num1='10A' num2='10B'>
         <div>Text should be in a div.</div>
       </FragmentChild>
@@ -130,7 +123,10 @@ const App = (): JSX.Element => {
 
       <State />
       <State />
-      <span>Last text here.</span>
+
+      <hr />
+
+      <RedrawButtons />
 
       <hr />
 

@@ -9,27 +9,29 @@ export const State = (): JSX.Element => {
   return (
     <>
       <button
-        onclick={(e: MouseEvent) => {
-          //setTimeout(() => {
+        onclick={() => {
           console.log(
             'Global counter should increase on each click:',
             globalCounter++,
           );
-          setCount(count() + 1);
-          console.log('Local counter should increase on each click:', count);
-          console.log('Should show MouseEvent:', e);
-          //z.redraw();
-          //}, 1000);
         }}
       >
-        Click to show Console Message
+        Increment Global Variable
+      </button>
+      <button
+        onclick={() => {
+          globalCounter++;
+          setCount(count() + 1);
+        }}
+      >
+        Increment Local + Global Variable
       </button>
       <button
         onclick={() => {
           setCount2(count2() + 1);
         }}
       >
-        Click to increase 2nd one
+        Increment Local 2
       </button>
       <div>Global counter: {globalCounter}</div>
       <div>Local counter: {count()}</div>
