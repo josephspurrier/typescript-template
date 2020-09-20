@@ -1,6 +1,6 @@
 import { Empty } from '@/vdom-empty';
 import { FragLevel1 } from '@/vdom-fragments';
-import { z } from '@/vdom-lib';
+import { z } from '@/lib/z';
 import { State } from '@/vdom-state';
 
 const Destructuring = ({ username }: { username: string }): JSX.Element => {

@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { z } from '@/vdom-lib';
+import { z } from '@/lib/z';
 
 export const FragLevel1 = (): JSX.Element => {
   return (
