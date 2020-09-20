@@ -8,8 +8,8 @@ export const createFragment = (
   return attrs.children;
 };
 
-// Removes any "FRAGMENT" elements from the state to make the dom comparisons
-// easier to work with.
+// Removes any "FRAGMENT" elements from the state to make the DOM comparisons
+// easier to perform.
 export const removeFragments = (vn: JSX.Vnode): JSX.Vnode => {
   const cleanChildren = (vn: JSX.Vnode): (string | JSX.Vnode)[] => {
     const rChildren = [] as (string | JSX.Vnode)[];

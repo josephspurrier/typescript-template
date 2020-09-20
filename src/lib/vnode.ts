@@ -1,6 +1,8 @@
 import { appendChild } from '@/lib/vdom';
-import { addEventListeners, setProps } from '@/lib/attrs';
+import { addEventListeners, setAttrs } from '@/lib/attrs';
 
+// Create a Vnode for the current element and children. Any fragments will
+// have a tag of FRAGMENT created.
 export const createVnode = (
   tag:
     | string
@@ -8,7 +10,6 @@ export const createVnode = (
   attrs: JSX.ElementAttrs,
   ...children: JSX.Vnode[]
 ): JSX.Vnode => {
-  //console.log('actual:', { tag, attrs: attrs || {}, children });
   const getChildren = (arr: JSX.Vnode[]): JSX.Vnode[] => {
     let r: JSX.Vnode[] = [];
 
@@ -54,7 +55,6 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
   ) => JSX.Vnode;
   if (typeof f === 'function') {
     node = f({ ...vnode.attrs, children: vnode.children });
-    //console.log('node:', node);
     if (Array.isArray(node)) {
       node.forEach(function (item: string[] | JSX.Vnode | JSX.Vnode[]) {
         appendChild(frag, item);
@@ -67,11 +67,10 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
   if (vnode && typeof vnode.tag === 'string') {
     if (vnode.tag === 'FRAGMENT') {
       appendChild(frag, vnode.children);
-      //setProps(frag, vnode.attrs);
-      //addEventListeners(frag, vnode.attrs);
+      // TODO: I don't believe these need attributes or event listeners.
     } else {
       const elem = document.createElement(vnode.tag);
-      setProps(elem, vnode.attrs);
+      setAttrs(elem, vnode.attrs);
       addEventListeners(elem, vnode.attrs);
       // TODO: Determine why one article suggested to use:
       // elem.appendChild.bind(elem)
@@ -82,7 +81,6 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
     return frag;
   }
 
-  //console.log('string2?', node.toString());
   frag.appendChild(document.createTextNode(node.toString()));
   return frag;
 };

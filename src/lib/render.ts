@@ -9,6 +9,5 @@ export const render = (
     z.state.rootParent = parent;
     z.state.generateRawState = child;
   }
-
   redraw();
 };

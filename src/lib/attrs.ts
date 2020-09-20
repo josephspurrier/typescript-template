@@ -1,8 +1,8 @@
 import { redraw } from '@/lib/vdom';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const setProp = (elem: Node, name: string, value: any): void => {
-  if (isCustomProp(name)) {
+const setSingleAttr = (elem: Node, name: string, value: any): void => {
+  if (isCustomAttrs(name)) {
     return;
   } else if (name === 'className') {
     (elem as HTMLElement).setAttribute('class', value);
@@ -17,21 +17,22 @@ const setProp = (elem: Node, name: string, value: any): void => {
   }
 };
 
-export const setProps = (elem: HTMLElement, attrs: JSX.ElementAttrs): void => {
+export const setAttrs = (elem: HTMLElement, attrs: JSX.ElementAttrs): void => {
   Object.keys(attrs).forEach((name) => {
     // eslint-disable-next-line no-prototype-builtins
     if (attrs.hasOwnProperty(name)) {
-      setProp(elem, name, attrs[name]);
+      setSingleAttr(elem, name, attrs[name]);
     }
   });
 };
 
-const removeBooleanProp = (elem: HTMLElement, name: string) => {
+const removeBooleanAttrs = (elem: HTMLElement, name: string) => {
   elem.removeAttribute(name);
-  //elem[name] = false;
+  // TODO: Determine if I need to remove elements like this:
+  // elem[name] = false;
 };
 
-const isEventProp = (name: string) => {
+const isEventAttrs = (name: string) => {
   return /^on/.test(name);
 };
 
@@ -44,59 +45,55 @@ export const addEventListeners = (
   attrs: JSX.ElementAttrs,
 ): void => {
   Object.keys(attrs).forEach((name) => {
-    if (isEventProp(name)) {
+    if (isEventAttrs(name)) {
       elem.addEventListener(extractEventName(name), attrs[name]);
       elem.addEventListener(extractEventName(name), () => {
-        // setTimeout(() => {
-        console.log('caught!');
+        // Force a redraw when buttons are clicked.
+        // TODO: Don't think we need a delay here (mayb a 0 second one).
+        // TODO: See if this is the best way to do redraws because it would
+        // be good to wait until the listener is finished. Maybe a race
+        // condition.
         redraw();
-        // }, 1000);
       });
     }
   });
 };
 
-const isCustomProp = (name: string) => {
-  return isEventProp(name) || name === 'forceUpdate';
+const isCustomAttrs = (name: string) => {
+  return isEventAttrs(name) || name === 'forceUpdate';
 };
 
-const updateProp = (
+const updateSingleAttr = (
   elem: Node,
   name: string,
   newVal: unknown,
   oldVal: unknown,
 ): void => {
   if (!newVal) {
-    //console.log('remove prop:', name);
-    removeProp(elem, name, oldVal);
+    removeAttrs(elem, name, oldVal);
   } else if (!oldVal || newVal !== oldVal) {
-    // console.log('update prop:', name);
-    // console.log('update prop - old:', oldVal);
-    // console.log('update prop - new:', newVal);
-    setProp(elem, name, newVal);
-  } else {
-    //console.log('skip prop:', name);
+    setSingleAttr(elem, name, newVal);
   }
 };
 
-export const updateProps = (
+export const updateAttrs = (
   elem: Node,
-  newProps: JSX.ElementAttrs,
-  oldProps: JSX.ElementAttrs = {},
+  newAttrs: JSX.ElementAttrs,
+  oldAttrs: JSX.ElementAttrs = {},
 ): void => {
-  const props = Object.assign({}, newProps, oldProps);
-  Object.keys(props).forEach((name) => {
-    updateProp(elem, name, newProps[name], oldProps[name]);
+  const Attrss = Object.assign({}, newAttrs, oldAttrs);
+  Object.keys(Attrss).forEach((name) => {
+    updateSingleAttr(elem, name, newAttrs[name], oldAttrs[name]);
   });
 };
 
-const removeProp = (elem: Node, name: string, value: unknown) => {
-  if (isCustomProp(name)) {
+const removeAttrs = (elem: Node, name: string, value: unknown) => {
+  if (isCustomAttrs(name)) {
     return;
   } else if (name === 'className') {
     (elem as HTMLElement).removeAttribute('class');
   } else if (typeof value === 'boolean') {
-    removeBooleanProp(elem as HTMLElement, name);
+    removeBooleanAttrs(elem as HTMLElement, name);
   } else {
     (elem as HTMLElement).removeAttribute(name);
   }
