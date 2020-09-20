@@ -1,8 +1,6 @@
 // Store the previous state.
 let initialState = {} as JSX.Vnode;
 let initialElement: () => JSX.Element;
-//let firstRun = false;
-//let currentState = {} as JSX.Vnode;
 let rootParent: HTMLElement;
 
 const createElementText = (node: string): Text => {
@@ -70,7 +68,6 @@ const addEventListeners = (elem: HTMLElement, attrs: JSX.ElementAttrs) => {
         // setTimeout(() => {
 
         // }, 1000);
-        console.log('caught!');
         z.redraw();
       });
     }
@@ -79,18 +76,6 @@ const addEventListeners = (elem: HTMLElement, attrs: JSX.ElementAttrs) => {
 
 const isCustomProp = (name: string) => {
   return isEventProp(name) || name === 'forceUpdate';
-  // if (name.startsWith('on') && name.toLowerCase() in window) {
-  //   // Add event listeners for those that are available in the window.
-  //   elem.addEventListener(name.toLowerCase().substr(2), value);
-  //   elem.addEventListener(name.toLowerCase().substr(2), () => {
-  //     // setTimeout(() => {
-
-  //     // }, 1000);
-  //     console.log('caught!');
-  //     redraw();
-  //   });
-  console.log(name);
-  return false;
 };
 
 const updateProp = (
@@ -224,7 +209,7 @@ const updateElement = function (
   oldNode?: JSX.Vnode | string,
   index = 0,
 ) {
-  //console.log('here?', newNode);
+  //console.log('here?', newNode, oldNode);
   if (oldNode === undefined) {
     // console.log('element changed 0');
     // console.log('element changed - newNode:', newNode);
@@ -311,6 +296,7 @@ export const z = {
   },
   redraw: (): void => {
     console.log('called: redraw!');
+    globalStateCounter = -1;
     const latestState = (initialElement() as unknown) as JSX.Vnode;
     if (!initialState.tag) {
       //console.log('initial state!');
@@ -319,6 +305,25 @@ export const z = {
     } else {
       //console.log('new state!');
       updateElement(rootParent, latestState, initialState);
+      //console.log('output:', latestState, initialState);
     }
   },
+  useState: function <T>(v: T): [() => T, (val: T) => void] {
+    globalStateCounter++;
+    const localCounter = globalStateCounter;
+    if (globalState[localCounter] === undefined) {
+      globalState[localCounter] = v;
+    }
+    return [
+      (): T => {
+        return globalState[localCounter] as T;
+      },
+      (val: T): void => {
+        globalState[localCounter] = val;
+      },
+    ];
+  },
 };
+
+const globalState = [] as unknown[];
+let globalStateCounter = -1;

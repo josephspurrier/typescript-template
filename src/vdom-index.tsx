@@ -83,7 +83,8 @@ let globalCounter = 0;
 
 // // Create some dom elements
 const App = (): JSX.Element => {
-  let localCounter = 0;
+  const [count, setCount] = z.useState(0);
+  const [count2, setCount2] = z.useState(5);
   return (
     <div class='app'>
       {/* <p>Welcome back, {firstname}.</p>
@@ -119,30 +120,35 @@ const App = (): JSX.Element => {
 
       <button
         onclick={(e: MouseEvent) => {
-          setTimeout(() => {
-            console.log(
-              'Global counter should increase on each click:',
-              globalCounter++,
-            );
-            console.log(
-              'Local counter should increase on each click:',
-              localCounter++,
-            );
-            console.log('Should show MouseEvent:', e);
-            z.redraw();
-          }, 1000);
+          //setTimeout(() => {
+          console.log(
+            'Global counter should increase on each click:',
+            globalCounter++,
+          );
+          setCount(count() + 1);
+          console.log('Local counter should increase on each click:', count);
+          console.log('Should show MouseEvent:', e);
+          //z.redraw();
+          //}, 1000);
         }}
       >
         Click to show Console Message
+      </button>
+      <button
+        onclick={() => {
+          setCount2(count2() + 1);
+        }}
+      >
+        Click to increase 2nd one
       </button>
       <div>
         Global counter: {globalCounter} (unfortunately, this won't update on
         click)
       </div>
       <div>
-        Local counter: {localCounter} (unfortunately, this won't update on
-        click)
+        Local counter: {count()} (unfortunately, this won't update on click)
       </div>
+      <div>Local counter2: {count2()}</div>
       {/* <p>
         <strong>Below are list items from an array:</strong>
       </p>
