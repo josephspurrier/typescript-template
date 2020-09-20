@@ -66,9 +66,8 @@ const addEventListeners = (elem: HTMLElement, attrs: JSX.ElementAttrs) => {
       elem.addEventListener(extractEventName(name), attrs[name]);
       elem.addEventListener(extractEventName(name), () => {
         // setTimeout(() => {
-
-        // }, 1000);
         z.redraw();
+        // }, 1000);
       });
     }
   });
