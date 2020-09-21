@@ -78,10 +78,10 @@ export const JSONRequest = (): JSX.Element => {
       <a title='home' href='#/'>
         Back
       </a>
-      <h1>
-        Title: {getPost().id} - {getPost().title}
-      </h1>
+      <h1>Title: {getPost().title}</h1>
       <h2>By: {getUser().name}</h2>
+      <i>Post ID: {getPost().id}</i>
+      <p>{getPost().body}</p>
     </>
   );
 };
