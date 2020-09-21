@@ -18,7 +18,9 @@ This project supports these features:
 - [x] JSX as children in JSX components
 - [ ] JSX keys for loops
 - [x] JSX attributes for strings
-- [x] JSX attributes for booleans (like 'required')
+- [ ] JSX attributes for booleans (like 'required') - this needs testing
+- [ ] Sort out class vs className
+- [ ] Test forceUpdate for event handlers
 - [x] JSX event handling for 'on' functions
 - [x] Virtual DOM
 - [x] Reactivity
@@ -26,9 +28,12 @@ This project supports these features:
 - [x] Local variable state using 'useState'
 - [x] Router
 - [x] 404 page
-- [x] Hashtag prefix handling
+- [x] Hash URL prefix handling
 - [x] Router and virtual DOM handling
 - [x] Virtual DOM handling of fragments at top level
+- [ ] Add Link to handle changing pages for URLs that don't include the hash
+- [ ] Support history handling on page URLs
+- [ ] Support regex on routes for authentication
 - [ ] Request Handling
 - [ ] Lifecycle methods
 - [ ] Performence testing
