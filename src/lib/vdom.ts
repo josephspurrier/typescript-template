@@ -9,9 +9,7 @@ export const redraw = (): void => {
 
   const rawDesiredState = (z.state.generateRawState() as unknown) as JSX.Vnode;
   if (!z.state.currentState.tag) {
-    console.log('early-state:', rawDesiredState);
     z.state.currentState = removeFragments(rawDesiredState);
-    console.log('state:', z.state.currentState);
     updateElement(z.state.rootParent, z.state.currentState);
   } else {
     const desiredState = removeFragments(rawDesiredState);
@@ -26,15 +24,16 @@ const updateElement = function (
   newNode: JSX.Vnode | string,
   oldNode?: JSX.Vnode | string,
   index = 0,
-) {
+): number {
   if (oldNode === undefined) {
     if (typeof newNode === 'string') {
       parent.appendChild(createElementText(newNode));
-      return;
+      return 0;
     }
     parent.appendChild(createFragment(newNode));
   } else if (newNode === undefined) {
     parent.removeChild(parent.childNodes[index]);
+    return 1;
   } else if (
     (typeof newNode === 'string' && typeof oldNode === 'string') ||
     (typeof newNode === 'number' && typeof oldNode === 'number')
@@ -63,12 +62,14 @@ const updateElement = function (
     const newLength = newVnode.children.length;
     const oldLength = oldVnode.children.length;
 
+    // Keep track of the deleted nodes.
+    let deleted = 0;
     for (let i = 0; i < newLength || i < oldLength; i++) {
-      updateElement(
+      deleted += updateElement(
         parent.childNodes[index],
         newVnode.children[i],
         oldVnode.children[i],
-        i,
+        i - deleted,
       );
     }
   } else {
@@ -76,6 +77,8 @@ const updateElement = function (
     //updateElement(parent, newNode, oldNode);
     console.log('Node:', parent, oldNode, newNode);
   }
+
+  return 0;
 };
 
 // FIXME: This currently only looks at tag and not attributes, etc.

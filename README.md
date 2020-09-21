@@ -27,7 +27,7 @@ This project supports these features:
 - [x] Router
 - [x] 404 page
 - [x] Hashtag prefix handling
-- [ ] Router and virtual DOM handling
+- [x] Router and virtual DOM handling
 - [ ] Request Handling
 - [ ] Lifecycle methods
 - [ ] Performence testing
