@@ -71,7 +71,7 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
   }
 
   if (vnode && typeof vnode.tag === 'string') {
-    if (vnode.tag === 'FRAGMENT' || vnode.tag === 'ROOTFRAGMENT') {
+    if (vnode.tag === 'ROOTFRAGMENT') {
       appendChild(frag, vnode.children);
     } else {
       const elem = document.createElement(vnode.tag);

@@ -36,7 +36,7 @@ This project supports these features:
 - [ ] Support regex on routes for authentication
 - [ ] Request Handling
 - [ ] Lifecycle methods
-- [ ] Performence testing
+- [ ] Performance testing
 - [ ] Unit tests
 - [ ] Clean up the types
 - [ ] Launch on NPM to see how the process works
