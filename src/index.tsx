@@ -158,7 +158,7 @@ document.body.appendChild(rootElem);
 
 const Index = (): JSX.Element => {
   return (
-    <section>
+    <>
       <div>
         <a title='page1' href='#/app'>
           Go to UI Testing
@@ -174,28 +174,28 @@ const Index = (): JSX.Element => {
           Go to Error Page
         </a>
       </div>
-    </section>
+    </>
   );
 };
 const Page2 = (): JSX.Element => {
   return (
-    <section>
+    <>
       <a title='home' href='#/'>
         Back
       </a>
       <p>Page 2.</p>
-    </section>
+    </>
   );
 };
 
 const ErrorPage = (): JSX.Element => {
   return (
-    <section>
+    <>
       <a title='home' href='#/'>
         Back
       </a>
       <p>404 Page Not Found</p>
-    </section>
+    </>
   );
 };
 

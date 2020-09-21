@@ -65,7 +65,7 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
   }
 
   if (vnode && typeof vnode.tag === 'string') {
-    if (vnode.tag === 'FRAGMENT') {
+    if (vnode.tag === 'FRAGMENT' || vnode.tag === 'ROOTFRAGMENT') {
       appendChild(frag, vnode.children);
       // TODO: I don't believe these need attributes or event listeners.
     } else {

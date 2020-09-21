@@ -1,5 +1,5 @@
 import { createElementText, createFragment } from '@/lib/vnode';
-import { removeFragments } from '@/lib/fragment';
+import { cleanState } from '@/lib/fragment';
 import { resetStateCounter } from '@/lib/state';
 import { updateAttrs } from '@/lib/attrs';
 import { z } from '@/lib/z';
@@ -9,10 +9,14 @@ export const redraw = (): void => {
 
   const rawDesiredState = (z.state.generateRawState() as unknown) as JSX.Vnode;
   if (!z.state.currentState.tag) {
-    z.state.currentState = removeFragments(rawDesiredState);
+    //console.log('early-state:', rawDesiredState);
+    z.state.currentState = cleanState(rawDesiredState);
+    //console.log('state:', z.state.currentState);
     updateElement(z.state.rootParent, z.state.currentState);
   } else {
-    const desiredState = removeFragments(rawDesiredState);
+    //console.log('early-state:', rawDesiredState);
+    const desiredState = cleanState(rawDesiredState);
+    //console.log('destate:', desiredState);
     updateElement(z.state.rootParent, desiredState, z.state.currentState);
     z.state.currentState = desiredState;
   }
@@ -39,14 +43,7 @@ const updateElement = function (
     (typeof newNode === 'number' && typeof oldNode === 'number')
   ) {
     if (newNode !== oldNode) {
-      if (parent) {
-        parent.replaceChild(
-          createElementText(newNode),
-          parent.childNodes[index],
-        );
-      } else {
-        console.log('skipped:', typeof newNode);
-      }
+      parent.replaceChild(createElementText(newNode), parent.childNodes[index]);
     }
   } else if (changed(newNode, oldNode)) {
     if (typeof newNode === 'string') {
@@ -66,14 +63,16 @@ const updateElement = function (
     let deleted = 0;
     for (let i = 0; i < newLength || i < oldLength; i++) {
       deleted += updateElement(
-        parent.childNodes[index],
+        newVnode.tag === 'ROOTFRAGMENT' || oldVnode.tag === 'ROOTFRAGMENT'
+          ? parent
+          : parent.childNodes[index],
         newVnode.children[i],
         oldVnode.children[i],
         i - deleted,
       );
     }
   } else {
-    // FIXME: This is probably a number, should probably not be a number;
+    // FIXME: I'm not sure what this could catch.
     //updateElement(parent, newNode, oldNode);
     console.log('Node:', parent, oldNode, newNode);
   }

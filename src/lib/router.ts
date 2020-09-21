@@ -1,24 +1,10 @@
 import { z } from '@/lib/z';
 
-interface RouteList {
+export interface RouteList {
   [property: string]: () => JSX.Element;
 }
 
-// Both set of different routes and template generation functions
-const routes = {} as RouteList;
-
-// Register a template (this is to mimic a template engine)
-// const templates = {} as RouteList;
-// export const template = (
-//   name: string,
-//   templateFunction: () => JSX.Element,
-// ): (() => JSX.Element) => {
-//   return (templates[name] = templateFunction);
-// };
-
-// Define the routes. Each route is described with a route path & a template to render
-// when entering that path. A template can be a string (file name), or a function that
-// will directly create the DOM objects.
+// Define a route.
 export const route = (
   parent: HTMLElement,
   path: string,
@@ -35,20 +21,20 @@ export const route = (
     window.addEventListener('hashchange', router);
   }
 
-  return (routes[path] = template);
+  return (z.state.routes[path] = template);
 };
 
-// Give the correspondent route (template) or fail
+// Get the route to render.
 const resolveRoute = (route: string) => {
   try {
-    return routes[route];
+    return z.state.routes[route];
   } catch (error) {
     throw new Error('The route is not defined');
   }
 };
 
 // The actual router, get the current URL and generate the corresponding template
-export const router = (): void => {
+const router = (): void => {
   let url = window.location.hash.slice(1) || '/';
   if (z.state.routerPrefix === '') {
     url = window.location.pathname;
