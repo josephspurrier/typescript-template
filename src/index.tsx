@@ -4,6 +4,7 @@ import { Empty } from '@/component/empty';
 import { FragLevel1 } from '@/component/fragments';
 import { State } from '@/component/state';
 import { RedrawButtons } from '@/component/redraw';
+import { BooleanFlip } from '@/component/boolean';
 
 const Destructuring = ({ username }: { username: string }): JSX.Element => {
   return <div>Destructuring should show foo: {username}</div>;
@@ -136,6 +137,10 @@ const App = (): JSX.Element => {
       <hr />
 
       <FragLevel1 />
+
+      <hr />
+
+      <BooleanFlip />
 
       <hr />
 

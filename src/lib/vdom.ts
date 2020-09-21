@@ -11,12 +11,12 @@ export const redraw = (): void => {
   if (!z.state.currentState.tag) {
     //console.log('early-state:', rawDesiredState);
     z.state.currentState = cleanState(rawDesiredState);
-    //console.log('state:', z.state.currentState);
+    //console.log('desired state:', z.state.currentState);
     updateElement(z.state.rootParent, z.state.currentState);
   } else {
     //console.log('early-state:', rawDesiredState);
     const desiredState = cleanState(rawDesiredState);
-    //console.log('destate:', desiredState);
+    //console.log('desired state:', desiredState);
     updateElement(z.state.rootParent, desiredState, z.state.currentState);
     z.state.currentState = desiredState;
   }
@@ -38,10 +38,7 @@ const updateElement = function (
   } else if (newNode === undefined) {
     parent.removeChild(parent.childNodes[index]);
     return 1;
-  } else if (
-    (typeof newNode === 'string' && typeof oldNode === 'string') ||
-    (typeof newNode === 'number' && typeof oldNode === 'number')
-  ) {
+  } else if (typeof newNode === 'string' && typeof oldNode === 'string') {
     if (newNode !== oldNode) {
       parent.replaceChild(createElementText(newNode), parent.childNodes[index]);
     }
@@ -51,7 +48,7 @@ const updateElement = function (
     } else {
       parent.replaceChild(createFragment(newNode), parent.childNodes[index]);
     }
-  } else if ((newNode as JSX.Vnode) && (oldNode as JSX.Vnode)) {
+  } else {
     const newVnode = newNode as JSX.Vnode;
     const oldVnode = oldNode as JSX.Vnode;
 
@@ -71,10 +68,6 @@ const updateElement = function (
         i - deleted,
       );
     }
-  } else {
-    // FIXME: I'm not sure what this could catch.
-    //updateElement(parent, newNode, oldNode);
-    console.log('Node:', parent, oldNode, newNode);
   }
 
   return 0;
@@ -85,7 +78,6 @@ const changed = function (
   node1: JSX.Vnode | string,
   node2: JSX.Vnode | string,
 ) {
-  //console.log('changed text?', node1, node2);
   if (typeof node1 !== typeof node2) {
     return true;
   } else if (

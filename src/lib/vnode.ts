@@ -8,16 +8,22 @@ export const createVnode = (
     | string
     | ((attrs: JSX.ElementAttrs, ...children: HTMLElement[]) => JSX.Vnode),
   attrs: JSX.ElementAttrs,
-  ...children: (JSX.Vnode | string)[]
+  ...children: (JSX.Vnode | unknown)[]
 ): JSX.Vnode => {
-  const getChildren = (arr: (JSX.Vnode | string)[]): (JSX.Vnode | string)[] => {
+  const getChildren = (
+    arr: (JSX.Vnode | unknown)[],
+  ): (JSX.Vnode | string)[] => {
     let r: (JSX.Vnode | string)[] = [];
 
-    arr.forEach((element) => {
+    arr.forEach((element: unknown) => {
       if (Array.isArray(element)) {
         r = [...r, ...getChildren(element)];
       } else {
-        r.push(element);
+        if ((element as JSX.Vnode).tag) {
+          r.push(element as JSX.Vnode);
+        } else {
+          r.push(String(element));
+        }
       }
     });
 
@@ -67,7 +73,6 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
   if (vnode && typeof vnode.tag === 'string') {
     if (vnode.tag === 'FRAGMENT' || vnode.tag === 'ROOTFRAGMENT') {
       appendChild(frag, vnode.children);
-      // TODO: I don't believe these need attributes or event listeners.
     } else {
       const elem = document.createElement(vnode.tag);
       setAttrs(elem, vnode.attrs);

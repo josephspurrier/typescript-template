@@ -16,7 +16,7 @@ export const route = (
   if (!z.state.routerActive) {
     console.log('Router active.');
     z.state.routerActive = true;
-    // For first load or when routes are changed in browser url box.
+    // For initial page load or when routes are changed in the browser URL textbox.
     window.addEventListener('load', router);
     window.addEventListener('hashchange', router);
   }
