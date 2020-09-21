@@ -1,21 +1,17 @@
 import { redraw } from '@/lib/vdom';
 import { z } from '@/lib/z';
 
+// Set the function to call to generate the Vnode and then trigger a redraw.
 export const render = (
   parent: HTMLElement,
-  child: string | (() => JSX.Element),
+  child: string | number | boolean | (() => JSX.Element),
 ): void => {
   z.state.rootParent = parent;
   if (typeof child === 'function') {
-    z.state.generateRawState = child;
+    z.state.generateRawState = child as () => JSX.Element;
   } else {
-    // FIXME: This looks strange and doesn't work so the types are messed up.
     z.state.generateRawState = () => {
-      return (z.createElement(
-        'div',
-        {},
-        'Page not found.',
-      ) as unknown) as JSX.Element;
+      return z.createElement('ROOTFRAGMENT', {}, String(child));
     };
   }
   redraw();

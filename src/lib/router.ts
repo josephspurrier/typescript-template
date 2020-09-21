@@ -16,7 +16,8 @@ export const route = (
   if (!z.state.routerActive) {
     console.log('Router active.');
     z.state.routerActive = true;
-    // For initial page load or when routes are changed in the browser URL textbox.
+    // For initial page load or when routes are changed in the browser
+    // URL textbox.
     window.addEventListener('load', router);
     window.addEventListener('hashchange', router);
   }
@@ -33,7 +34,7 @@ const resolveRoute = (route: string) => {
   }
 };
 
-// The actual router, get the current URL and generate the corresponding template
+// Router will render the page based on the route to the DOM.
 const router = (): void => {
   let url = window.location.hash.slice(1) || '/';
   if (z.state.routerPrefix === '') {

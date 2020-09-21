@@ -73,7 +73,6 @@ const updateElement = function (
   return 0;
 };
 
-// FIXME: This currently only looks at tag and not attributes, etc.
 const changed = function (
   node1: JSX.Vnode | string,
   node2: JSX.Vnode | string,
@@ -98,34 +97,18 @@ const changed = function (
   return false;
 };
 
-const isStringArray = (value: (JSX.Vnode | string)[]): boolean => {
-  if (Array.isArray(value)) {
-    let notString = true;
-    value.forEach(function (item: unknown) {
-      if (typeof item !== 'string') {
-        notString = false;
-      }
-    });
-    return notString;
-  }
-
-  return false;
-};
-
 export const appendChild = (
   parent: HTMLElement | DocumentFragment,
   child: (string | JSX.Vnode)[] | JSX.Vnode,
 ): void => {
   if (Array.isArray(child)) {
-    if (isStringArray(child)) {
-      (child as string[]).forEach((nestedChild: string) => {
-        parent.appendChild(document.createTextNode(nestedChild.toString()));
-      });
-    } else {
-      (child as JSX.Vnode[]).forEach((nestedChild) =>
-        appendChild(parent, nestedChild),
-      );
-    }
+    child.forEach((nestedChild) => {
+      if ((nestedChild as JSX.Vnode).tag) {
+        appendChild(parent, nestedChild as JSX.Vnode);
+      } else {
+        parent.appendChild(document.createTextNode(String(nestedChild)));
+      }
+    });
   } else {
     parent.appendChild(createFragment(child));
   }
