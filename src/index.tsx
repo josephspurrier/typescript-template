@@ -158,10 +158,10 @@ document.body.appendChild(rootElem);
 
 const Index = (): JSX.Element => {
   return (
-    <div>
+    <section>
       <div>
-        <a title='page1' href='#/page1'>
-          Go to Page 1
+        <a title='page1' href='#/app'>
+          Go to UI Testing
         </a>
       </div>
       <div>
@@ -174,46 +174,34 @@ const Index = (): JSX.Element => {
           Go to Error Page
         </a>
       </div>
-    </div>
+    </section>
   );
 };
-
-const Page1 = (): JSX.Element => {
+const Page2 = (): JSX.Element => {
   return (
-    <div class='app'>
-      <p>Page 1.</p>
+    <section>
       <a title='home' href='#/'>
         Back
       </a>
-    </div>
+      <p>Page 2.</p>
+    </section>
   );
 };
-
-// const Page2 = (): JSX.Element => {
-//   return (
-//     <div class='app'>
-//       <p>Page 2.</p>
-//       <a title='home' href='#/'>
-//         Back
-//       </a>
-//     </div>
-//   );
-// };
 
 const ErrorPage = (): JSX.Element => {
   return (
-    <div>
-      <div>404 Page not found</div>
+    <section>
       <a title='home' href='#/'>
         Back
       </a>
-    </div>
+      <p>404 Page Not Found</p>
+    </section>
   );
 };
 
 z.state.routerPrefix = '#';
 
 z.route(rootElem, '/', Index);
-z.route(rootElem, '/page1', Page1);
-z.route(rootElem, '/page2', App);
+z.route(rootElem, '/app', App);
+z.route(rootElem, '/page2', Page2);
 z.route(rootElem, '/404', ErrorPage);

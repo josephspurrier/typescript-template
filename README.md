@@ -28,6 +28,7 @@ This project supports these features:
 - [x] 404 page
 - [x] Hashtag prefix handling
 - [x] Router and virtual DOM handling
+- [ ] Virtual DOM handling of fragments at top level
 - [ ] Request Handling
 - [ ] Lifecycle methods
 - [ ] Performence testing
