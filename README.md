@@ -37,6 +37,7 @@ This project supports these features:
 - [x] Request Handling for JSON
 - [ ] Request handling for non-JSON
 - [ ] Handle redraws on requests to ensure loop don't occur
+- [ ] Add useEffect to handle when to update (onLoad, on variable change, etc)
 - [x] Add redraw after request (doesn't alway work, especially with nested requested, but if useing useState then it will)
 - [x] Add redraw on setter from useState
 - [x] Easy way to view output of generated code (`npm run build-clean`)
