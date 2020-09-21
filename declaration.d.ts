@@ -25,9 +25,7 @@ declare namespace JSX {
     [property: string]: any;
   }
   interface Vnode {
-    tag:
-      | string
-      | ((attrs: JSX.ElementAttrs, ...children: HTMLElement[]) => Vnode);
+    tag: string | ((attrs: JSX.ElementAttrs, ...children: Vnode[]) => Vnode);
     attrs: ElementAttrs;
     children: (string | Vnode)[];
   }

@@ -57,7 +57,7 @@ export const createFragment = (node: string | JSX.Vnode): DocumentFragment => {
   const vnode = node as JSX.Vnode;
   const f = vnode.tag as (
     attrs: JSX.ElementAttrs,
-    ...children: HTMLElement[]
+    ...children: JSX.Vnode[]
   ) => JSX.Vnode;
   if (typeof f === 'function') {
     node = f({ ...vnode.attrs, children: vnode.children });
