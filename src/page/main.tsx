@@ -15,6 +15,11 @@ export const MainPage = (): JSX.Element => {
         </a>
       </div>
       <div>
+        <a title='jsonrequest' href='#/jsonrequest'>
+          Go to JSON Request Page
+        </a>
+      </div>
+      <div>
         <a title='error' href='#/404'>
           Go to Error Page
         </a>

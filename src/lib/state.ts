@@ -22,6 +22,7 @@ export const useState = function <T>(v: T): [() => T, (val: T) => void] {
     },
     (val: T): void => {
       z.state.globalState[localCounter] = val;
+      z.redraw();
     },
   ];
 };

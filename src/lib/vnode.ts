@@ -19,7 +19,7 @@ export const createVnode = (
       if (Array.isArray(element)) {
         r = [...r, ...getChildren(element)];
       } else {
-        if ((element as JSX.Vnode).tag) {
+        if (element && (element as JSX.Vnode).tag) {
           r.push(element as JSX.Vnode);
         } else {
           r.push(String(element));

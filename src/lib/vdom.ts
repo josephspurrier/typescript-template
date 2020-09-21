@@ -4,9 +4,17 @@ import { resetStateCounter } from '@/lib/state';
 import { updateAttrs } from '@/lib/attrs';
 import { z } from '@/lib/z';
 
+// Only allow redrawing once and queue up redrawing after if needed.
 export const redraw = (): void => {
-  resetStateCounter();
+  // If currently redrawing, then just queue another after.
+  if (z.state.isRedrawing) {
+    z.state.redrawAgain = true;
+    return;
+  }
 
+  z.state.isRedrawing = true;
+
+  resetStateCounter();
   const rawDesiredState = (z.state.generateRawState() as unknown) as JSX.Vnode;
   if (!z.state.currentState.tag) {
     //console.log('early-state:', rawDesiredState);
@@ -19,6 +27,14 @@ export const redraw = (): void => {
     //console.log('desired state:', desiredState);
     updateElement(z.state.rootParent, desiredState, z.state.currentState);
     z.state.currentState = desiredState;
+  }
+
+  z.state.isRedrawing = false;
+
+  // If done redrawing and need to redraw again, then trigger.
+  if (z.state.redrawAgain) {
+    z.state.redrawAgain = false;
+    redraw();
   }
 };
 

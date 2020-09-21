@@ -4,6 +4,7 @@ import { createVnode } from '@/lib/vnode';
 import { createFragment } from '@/lib/fragment';
 import { redraw } from '@/lib/vdom';
 import { route, RouteList } from '@/lib/router';
+import { request } from '@/lib/request';
 
 export const z = {
   state: {
@@ -23,6 +24,10 @@ export const z = {
     routerPrefix: '#',
     // List of routes.
     routes: {} as RouteList,
+    // Determine if currently redrawing;
+    isRedrawing: false,
+    // If redrawing, then redraw again after.
+    redrawAgain: false,
   },
   fragment: createFragment,
   createElement: createVnode,
@@ -30,4 +35,5 @@ export const z = {
   redraw: redraw,
   useState: useState,
   route: route,
+  request: request,
 };

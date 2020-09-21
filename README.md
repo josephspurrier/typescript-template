@@ -34,7 +34,12 @@ This project supports these features:
 - [ ] Add Link to handle changing pages for URLs that don't include the hash
 - [ ] Support history handling on page URLs
 - [ ] Support regex on routes for authentication
-- [ ] Request Handling
+- [x] Request Handling for JSON
+- [ ] Request handling for non-JSON
+- [ ] Handle redraws on requests to ensure loop don't occur
+- [x] Add redraw after request (doesn't alway work, especially with nested requested, but if useing useState then it will)
+- [x] Add redraw on setter from useState
+- [x] Easy way to view output of generated code (`npm run build-clean`)
 - [ ] Lifecycle methods
 - [ ] Performance testing
 - [ ] Unit tests
