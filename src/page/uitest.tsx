@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { z } from '@/lib/z';
+import { m } from 'mantium';
 import { Empty } from '@/component/empty';
 import { FragLevel1 } from '@/component/fragments';
 import { State } from '@/component/state';

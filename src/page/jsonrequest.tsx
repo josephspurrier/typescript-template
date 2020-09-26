@@ -1,6 +1,4 @@
-import { useState } from '@/lib/state';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { z } from '@/lib/z';
+import { m } from 'mantium';
 
 interface PostResponse {
   userId: number;
@@ -45,23 +43,20 @@ const useEffect = (f: () => void, when: string[] = []) => {
 };
 
 export const JSONRequest = (): JSX.Element => {
-  const [getPost, setPost] = useState({} as PostResponse);
-  const [getUser, setUser] = useState({} as UserReponse);
+  const [getPost, setPost] = m.useState({} as PostResponse);
+  const [getUser, setUser] = m.useState({} as UserReponse);
 
   useEffect(() => {
-    z.request<PostResponse>({
+    m.request<PostResponse>({
       url: 'https://jsonplaceholder.typicode.com/posts/5',
     })
       .then((data) => {
-        console.log('post data:', data);
         setPost(data);
 
-        return z
-          .request<UserReponse>({
-            url: `https://jsonplaceholder.typicode.com/users/${data.userId}`,
-          })
+        m.request<UserReponse>({
+          url: `https://jsonplaceholder.typicode.com/users/${data.userId}`,
+        })
           .then((udata) => {
-            console.log('user data:', udata);
             setUser(udata);
           })
           .catch((error: Response) => {
@@ -78,10 +73,10 @@ export const JSONRequest = (): JSX.Element => {
       <a title='home' href='#/'>
         Back
       </a>
-      <h1>Title: {getPost().title}</h1>
-      <h2>By: {getUser().name}</h2>
-      <i>Post ID: {getPost().id}</i>
-      <p>{getPost().body}</p>
+      <h1>Title: {getPost.title}</h1>
+      <h2>By: {getUser.name}</h2>
+      <i>Post ID: {getPost.id}</i>
+      <p>{getPost.body}</p>
     </>
   );
 };

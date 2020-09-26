@@ -1,11 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { z } from '@/lib/z';
+import { m } from 'mantium';
 
 let globalCounter = 0;
 
 export const State = (): JSX.Element => {
-  const [count, setCount] = z.useState(0);
-  const [count2, setCount2] = z.useState(5);
+  const [count, setCount] = m.useState(0);
+  const [count2, setCount2] = m.useState(5);
 
   let neverWork = 0;
   return (
@@ -20,14 +19,14 @@ export const State = (): JSX.Element => {
       <button
         onclick={() => {
           globalCounter++;
-          setCount(count() + 1);
+          setCount((prev: number) => prev + 1);
         }}
       >
         Increment Local + Global Variable
       </button>
       <button
         onclick={() => {
-          setCount2(count2() + 1);
+          setCount2((prev: number) => prev + 1);
         }}
       >
         Increment Local 2
@@ -43,8 +42,8 @@ export const State = (): JSX.Element => {
         Try Increment "Never counter" But Fail
       </button>
       <div>Global counter: {globalCounter}</div>
-      <div>Local counter: {count()}</div>
-      <div>Local counter 2: {count2()}</div>
+      <div>Local counter: {count}</div>
+      <div>Local counter 2: {count2}</div>
       <div>
         Never counter: {neverWork} (Closures with local variables without
         'useState' won't work with DOM updates. See the Console for output).

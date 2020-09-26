@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { z } from '@/lib/z';
+import { m } from 'mantium';
 
 export const ErrorPage = (): JSX.Element => {
   return (

@@ -1,19 +1,18 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { z } from '@/lib/z';
-import { useState } from '@/lib/state';
+import { m } from 'mantium';
 
 export const BooleanFlip = (): JSX.Element => {
-  const [isBool, setBool] = useState(false);
+  const [isBool, setBool] = m.useState(false);
   return (
     <>
       <button
         onclick={() => {
-          setBool(!isBool());
+          setBool((prev) => !prev);
         }}
       >
         Change Boolean Value
       </button>
-      <div>Current value: {isBool()}</div>
+      <div>Current value: {isBool}</div>
     </>
   );
 };
