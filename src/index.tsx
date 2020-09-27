@@ -9,7 +9,6 @@ import { UITestPage } from '@/page/uitest';
 const rootElem = document.createElement('div');
 rootElem.setAttribute('id', 'root');
 document.body.appendChild(rootElem);
-//m.render(rootElem, UITestPage);
 
 m.state.routerPrefix = '#';
 m.route(rootElem, '/', MainPage);

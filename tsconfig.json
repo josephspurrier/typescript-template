@@ -19,7 +19,8 @@
     "jsxFactory": "m.createElement",
     "jsxFragmentFactory": "m.fragment",
     "allowJs": true,
-    "checkJs": true
+    "checkJs": true,
+    "noImplicitAny": true
   },
   "include": [
     "*",
